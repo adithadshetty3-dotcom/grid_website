@@ -1,0 +1,270 @@
+/* =========================================================
+   GRID — Shared Design System
+   Dark charcoal base, crimson accent, frosted-glass surfaces.
+   Every page should link this file before any page-specific CSS.
+   ========================================================= */
+
+/* ---------- Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+/* ---------- Tokens ---------- */
+:root {
+  /* Color */
+  --bg-void:        #0A0A0C;   /* page background */
+  --bg-surface:      #121215;   /* raised, pre-glass panel base */
+  --glass-fill:      rgba(255, 255, 255, 0.035);
+  --glass-border:    rgba(255, 255, 255, 0.08);
+  --accent:          #D81E3F;   /* crimson — primary accent */
+  --accent-dim:      #7A0F22;   /* deep crimson — borders, dividers */
+  --accent-glow:     rgba(216, 30, 63, 0.35);
+  --text-primary:    #F2EFEA;   /* soft off-white */
+  --text-muted:      #8A8690;   /* desaturated grey-violet */
+
+  /* Type */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Type scale */
+  --text-xs:   0.8125rem;
+  --text-sm:   0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg:   1.375rem;
+  --text-xl:   2rem;
+  --text-2xl:  3rem;
+  --text-3xl:  4.25rem;
+
+  /* Spacing (8px base) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --space-7: 7rem;
+
+  /* Shape */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------- Reset ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient glow — a single faint red wash behind the hero, not repeated per-section */
+body::before {
+  content: "";
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  width: 60vw;
+  height: 60vw;
+  max-width: 900px;
+  max-height: 900px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: var(--text-3xl); font-weight: 700; }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+
+p { color: var(--text-muted); max-width: 65ch; }
+
+a { color: inherit; text-decoration: none; }
+
+img { max-width: 100%; display: block; }
+
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+/* ---------- Glass surface (shared by nav, cards, footer) ---------- */
+.glass {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), background 0.15s var(--ease);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-primary);
+}
+.btn-primary:hover {
+  box-shadow: 0 0 24px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--glass-border);
+  color: var(--text-primary);
+}
+.btn-ghost:hover {
+  border-color: var(--accent-dim);
+  background: rgba(216, 30, 63, 0.06);
+}
+
+/* ---------- Cards ---------- */
+/* Elevation communicates hierarchy: default cards sit flat in the glass tier;
+   .card-featured lifts with a crimson-tinted shadow for the one item that matters most. */
+.card {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.card-featured {
+  border-color: var(--accent-dim);
+  box-shadow: 0 8px 40px -12px var(--accent-glow);
+}
+
+.card h3 { margin-bottom: var(--space-1); }
+
+/* ---------- Nav ---------- */
+.nav {
+  position: fixed;
+  top: var(--space-2);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: calc(100% - var(--space-4));
+  max-width: 1040px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-lg);
+}
+
+.nav-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-4);
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s var(--ease);
+}
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  color: var(--text-primary);
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  margin-top: var(--space-7);
+  padding: var(--space-5) 0 var(--space-4);
+  border-top: 1px solid var(--glass-border);
+}
+
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.footer-col h4 { margin-bottom: var(--space-2); font-size: var(--text-sm); }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.5rem; }
+.footer-col a {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  transition: color 0.15s var(--ease);
+}
+.footer-col a:hover { color: var(--accent); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* ---------- Accessibility ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.75rem; }
+  .footer-grid { flex-direction: column; }
+}

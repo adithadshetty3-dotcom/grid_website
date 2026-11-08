@@ -1,0 +1,71 @@
+<!-- =========================================================
+     GRID — Shared Nav & Footer Snippet
+     Copy this markup into every page exactly as-is.
+     Only change: the href values and the aria-current="page"
+     marker, which should point at whichever page is active.
+     Requires style.css to be linked in <head>.
+     ========================================================= -->
+
+<!-- ===== NAV — paste right after <body> ===== -->
+<header class="nav glass">
+  <a href="index.html" class="nav-brand">GRID</a>
+
+  <nav>
+    <ul class="nav-links">
+      <li><a href="index.html" aria-current="page">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="team.html">Meet the Team</a></li>
+      <li><a href="timeline.html">Timeline</a></li>
+      <li><a href="faqs.html">FAQs</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ===== FOOTER — paste right before </body> ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Grid</h4>
+        <p>The technical club building things worth shipping.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="team.html">Meet the Team</a></li>
+          <li><a href="timeline.html">Timeline</a></li>
+          <li><a href="faqs.html">FAQs</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="mailto:hello@grid.club">Email</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Grid</span>
+      <span>Built by the Grid team</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+</script>
