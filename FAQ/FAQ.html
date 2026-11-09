@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FAQ</title>
+
+    
+    <link rel="stylesheet" href="../style.css">
+
+   
+    <link rel="stylesheet" href="FAQ.css">
+
+</head>
+<body>
+
+    <main class="faq-page">
+        <h1 class="faq-heading">Frequently Asked Questions (FAQ)</h1>
+        <section class="faq-list" aria-label="Frequently asked questions">
+            <article class="faq-item">
+                <button class="faq-trigger" id="faq-question-1" type="button" aria-expanded="false" aria-controls="faq-answer-1">
+                    <span class="faq-diamond" aria-hidden="true">◆</span>
+                    <span class="faq-question">What is GRID?</span>
+                    <span class="faq-toggle" aria-hidden="true"></span>
+                </button>
+                <div class="faq-answer" id="faq-answer-1" role="region" aria-labelledby="faq-question-1" aria-hidden="true">
+                    <div class="faq-answer-inner">
+                        <p class="faq-answer-text">We are the official technical club of K. S. School of Engineering and Management. We are a club run by students, for students. Our focus is on bridging the gap between academics and real-world applications.</p>
+                    </div>
+                </div>
+            </article>
+            <article class="faq-item">
+                <button class="faq-trigger" id="faq-question-2" type="button" aria-expanded="false" aria-controls="faq-answer-2">
+                    <span class="faq-diamond" aria-hidden="true">◆</span>
+                    <span class="faq-question">Who can participate in GRID's events?</span>
+                    <span class="faq-toggle" aria-hidden="true"></span>
+                </button>
+                <div class="faq-answer" id="faq-answer-2" role="region" aria-labelledby="faq-question-2" aria-hidden="true">
+                    <div class="faq-answer-inner">
+                        <ul class="faq-bullet-list">
+                            <li class="faq-bullet">
+                                <span class="faq-bullet-marker" aria-hidden="true">•</span>
+                                <span class="faq-bullet-content">GRID events are open to all students who are eager to learn, compete, and collaborate.</span>
+                            </li>
+                            <li class="faq-bullet">
+                                <span class="faq-bullet-marker" aria-hidden="true">•</span>
+                                <span class="faq-bullet-content">Students from all the departments are welcome.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+            <article class="faq-item">
+                <button class="faq-trigger" id="faq-question-3" type="button" aria-expanded="false" aria-controls="faq-answer-3">
+                    <span class="faq-diamond" aria-hidden="true">◆</span>
+                    <span class="faq-question">How can I join GRID?</span>
+                    <span class="faq-toggle" aria-hidden="true"></span>
+                </button>
+                <div class="faq-answer" id="faq-answer-3" role="region" aria-labelledby="faq-question-3" aria-hidden="true">
+                    <div class="faq-answer-inner">
+                        <p class="faq-answer-text">You can join GRID by applying during the recruitment phase, which is announced on our website and social media. Stay updated on announcements and selection criteria to become a part of our team!</p>
+                    </div>
+                </div>
+            </article>
+            <article class="faq-item">
+                <button class="faq-trigger" id="faq-question-4" type="button" aria-expanded="false" aria-controls="faq-answer-4">
+                    <span class="faq-diamond" aria-hidden="true">◆</span>
+                    <span class="faq-question">What are the benefits of participating in GRID events?</span>
+                    <span class="faq-toggle" aria-hidden="true"></span>
+                </button>
+                <div class="faq-answer" id="faq-answer-4" role="region" aria-labelledby="faq-question-4" aria-hidden="true">
+                    <div class="faq-answer-inner">
+                        <p class="faq-answer-text">Participating in GRID events helps you enhance your technical and soft skills, gain hands-on experience, network with like-minded peers and industry professionals, and even win exciting prizes or recognition!</p>
+                    </div>
+                </div>
+            </article>
+            <article class="faq-item">
+                <button class="faq-trigger" id="faq-question-5" type="button" aria-expanded="false" aria-controls="faq-answer-5">
+                    <span class="faq-diamond" aria-hidden="true">◆</span>
+                    <span class="faq-question">What kinds of events does GRID organize?</span>
+                    <span class="faq-toggle" aria-hidden="true"></span>
+                </button>
+                <div class="faq-answer" id="faq-answer-5" role="region" aria-labelledby="faq-question-5" aria-hidden="true">
+                    <div class="faq-answer-inner">
+                        <p class="faq-answer-text">GRID organizes a variety of events, including coding competitions, ideation challenges, workshops, guest lectures, networking sessions, and non-technical events to enhance creativity and teamwork.</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        const faqTriggers = document.querySelectorAll(".faq-trigger");
+        const answerTimers = new Map();
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        function resetAnswer(answer) {
+            const timer = answerTimers.get(answer);
+            if (timer) {
+                window.clearTimeout(timer);
+                answerTimers.delete(answer);
+            }
+
+            answer.querySelectorAll(".faq-answer-line, .faq-bullet").forEach((element) => {
+                element.classList.remove("is-animating", "is-revealed");
+            });
+        }
+
+        function wrapDisplayedLines(container) {
+            const text = container.textContent.trim().replace(/\s+/g, " ");
+            if (!text) {
+                return [];
+            }
+
+            container.textContent = text;
+            const textNode = container.firstChild;
+            const range = document.createRange();
+            const lines = [];
+            let top = null;
+            let offset = 0;
+
+            text.split(" ").forEach((word) => {
+                range.setStart(textNode, offset);
+                range.setEnd(textNode, offset + word.length);
+                const wordTop = range.getBoundingClientRect().top;
+
+                if (!lines.length || Math.abs(wordTop - top) > 1) {
+                    lines.push([]);
+                    top = wordTop;
+                }
+
+                lines[lines.length - 1].push(word);
+                offset += word.length + 1;
+            });
+
+            container.replaceChildren();
+            const lineElements = lines.map((words) => {
+                const line = document.createElement("span");
+                line.className = "faq-answer-line";
+                line.textContent = `${words.join(" ")} `;
+                container.append(line);
+                return line;
+            });
+
+            return lineElements;
+        }
+
+        function revealAnswer(answer) {
+            const blocks = answer.querySelectorAll(".faq-answer-text, .faq-bullet-content");
+            let sequence = 0;
+
+            blocks.forEach((block) => {
+                const isBullet = block.classList.contains("faq-bullet-content");
+                const lineElements = wrapDisplayedLines(block);
+                const bullet = isBullet ? block.closest(".faq-bullet") : null;
+                const bulletDelay = `${sequence * 0.63}s`;
+
+                if (bullet && !prefersReducedMotion.matches) {
+                    bullet.style.setProperty("--faq-line-delay", bulletDelay);
+                    bullet.classList.add("is-animating");
+                } else if (bullet) {
+                    bullet.classList.add("is-revealed");
+                }
+
+                lineElements.forEach((line, index) => {
+                    if (prefersReducedMotion.matches) {
+                        line.classList.add("is-revealed");
+                        return;
+                    }
+
+                    const delay = isBullet ? bulletDelay : `${(sequence + index) * 0.63}s`;
+                    line.style.setProperty("--faq-line-delay", delay);
+                    line.classList.add("is-animating");
+                });
+
+                sequence += isBullet ? 1 : lineElements.length;
+            });
+        }
+
+        faqTriggers.forEach((trigger) => {
+            trigger.addEventListener("click", () => {
+                const shouldExpand = trigger.getAttribute("aria-expanded") !== "true";
+
+                faqTriggers.forEach((item) => {
+                    const answer = document.getElementById(item.getAttribute("aria-controls"));
+                    const isExpanded = item === trigger && shouldExpand;
+
+                    resetAnswer(answer);
+                    item.setAttribute("aria-expanded", String(isExpanded));
+                    answer.setAttribute("aria-hidden", String(!isExpanded));
+
+                    if (isExpanded) {
+                        const delay = prefersReducedMotion.matches ? 0 : 360;
+                        const timer = window.setTimeout(() => {
+                            answerTimers.delete(answer);
+                            revealAnswer(answer);
+                        }, delay);
+                        answerTimers.set(answer, timer);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
