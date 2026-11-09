@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet the Team | GRID KSSEM</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="team.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="nav glass">
+        <a href="index.html" class="nav-brand">GRID</a>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="team.html" aria-current="page">Meet the Team</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-label="Open menu"
+                aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <!-- Core Team Content -->
+    
+<main id="core-team">
+
+    <!-- Animated Hero Section -->
+    <section class="team-hero">
+
+        <div class="team-orbit"></div>
+
+        <div class="team-label">
+            ✦ THE PEOPLE BEHIND THE PROGRESS
+        </div>
+
+        <h1 class="team-heading">
+            MEET THE
+            <span>MINDS.</span>
+        </h1>
+
+        <p class="team-description">
+            Great ideas need great people.
+            Meet the passionate minds, creative thinkers
+            and innovators who bring GRID to life.
+        </p>
+
+        <div class="team-scroll">
+            ↓ &nbsp; DISCOVER OUR TEAM
+        </div>
+
+    </section>
+    
+<!-- CORE TEAM MEMBERS SECTION -->
+
+<section class="members-section" id="members">
+
+    <div class="members-header">
+        <p class="section-label">THE PEOPLE WHO MAKE IT HAPPEN</p>
+        <h2>THE CORE <span>TEAM</span></h2>
+        <p class="members-intro">
+            A team of thinkers, builders and leaders
+            turning ambitious ideas into reality.
+        </p>
+    </div>
+
+    <div class="members-grid">
+
+        <!-- Member 1 -->
+        <article class="member-card">
+            <div class="member-image">
+                <div class="member-placeholder">01</div>
+                <span class="member-number">GRID / 01</span>
+            </div>
+            <div class="member-info">
+                <p class="member-role">PRESIDENT</p>
+                <h3>Member Name</h3>
+                <p class="member-desc">Leading the vision of GRID.</p>
+            </div>
+        </article>
+
+        <!-- Member 2 -->
+        <article class="member-card">
+            <div class="member-image">
+                <div class="member-placeholder">02</div>
+                <span class="member-number">GRID / 02</span>
+            </div>
+            <div class="member-info">
+                <p class="member-role">VICE PRESIDENT</p>
+                <h3>Member Name</h3>
+                <p class="member-desc">Driving ideas and innovation.</p>
+            </div>
+        </article>
+
+        <!-- Member 3 -->
+        <article class="member-card">
+            <div class="member-image">
+                <div class="member-placeholder">03</div>
+                <span class="member-number">GRID / 03</span>
+            </div>
+            <div class="member-info">
+                <p class="member-role">TECHNICAL LEAD</p>
+                <h3>Member Name</h3>
+                <p class="member-desc">Building technology and solutions.</p>
+            </div>
+        </article>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>GRID</h4>
+                    <p>The technical club building things worth shipping.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="team.html">Meet the Team</a></li>
+                        <li><a href="timeline.html">Timeline</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="mailto:hello@grid.club">Email</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; <span id="footer-year"></span> GRID</span>
+                <span>Built by the GRID team</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById("footer-year").textContent =
+            new Date().getFullYear();
+    </script>
+
+    <script src="team.js"></script>
+
+</body>
+</html>
