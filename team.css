@@ -235,17 +235,23 @@
 /* Image placeholder */
 
 .member-image {
-    height: 340px;
-    position: relative;
+    width: 100%;
+    height: 280px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     overflow: hidden;
-    background:
-        radial-gradient(circle at center,
-        rgba(216,30,63,0.25),
-        transparent 65%),
-        #18181D;
+    border-radius: 12px;
+    background: #121215;
+}
+
+.member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
 }
 
 .member-placeholder {
@@ -551,6 +557,65 @@
         transition: none;
     }
 }
+.member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 10px;
+}
+
+/* MEMBER PHOTO ALIGNMENT */
+
+.member-image {
+    width: 100%;
+    height: 260px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    border-radius: 12px;
+    background: #121215;
+}
+
+.member-image img {
+    width: 190px;
+    height: 240px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: 12px;
+}
+
+/* MEMBER CARD ALIGNMENT */
+
+.member-card {
+    overflow: hidden;
+}
+
+.member-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.linkedin-button {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 10px 22px;
+    background: #D81E3F;
+    color: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.linkedin-button:hover {
+    background: #A91430;
+    transform: translateY(-3px);
+}
+
 
 
 

@@ -7,7 +7,7 @@ const teamGroups = [
         title: "Leads",
         description: "Meet the leaders guiding GRID.",
         icon: "♛",
-        count: 5
+        count: 6
     },
     {
         id: "technical",
@@ -55,6 +55,30 @@ const selectedDescription =
 
 function openTeam(group) {
 
+const teamMembers = {
+    leads: [
+        {
+            name: "Member 1 Name",
+            role: "Core Team Lead",
+            photo: "images/team/lead1.jpeg",
+            linkedin: "https://www.linkedin.com/"
+        },
+        {
+            name: "Member 2 Name",
+            role: "Core Team Lead",
+            photo: "images/team/lead2.jpeg",
+            linkedin: "https://www.linkedin.com/"
+        },
+        {
+            name: "Member 3 Name",
+            role: "Core Team Lead",
+            photo: "images/team/lead3.jpeg",
+            linkedin: "https://www.linkedin.com/"
+        }
+    ]
+};
+
+
     categories.hidden = true;
     membersView.hidden = false;
 
@@ -70,19 +94,31 @@ function openTeam(group) {
 
         card.innerHTML = `
             <div class="member-image">
-                <div class="member-placeholder">
-                    ${String(i).padStart(2, "0")}
-                </div>
-                <span class="member-number">
-                    GRID / ${String(i).padStart(2, "0")}
-                </span>
+    ${
+        group.id === "leads" && i <= 3
+        ? `<img src="images/team/lead${i}.jpeg"
+            alt="GRID Core Team Lead ${i}">`
+        : `<div class="member-placeholder">
+            ${String(i).padStart(2, "0")}
+        </div>`
+    }
+</div>
+    
+</div>
+                
             </div>
 
             <div class="member-info">
-                <p class="member-role">${group.title}</p>
-                <h3>Member Name</h3>
-                <p class="member-desc">Profile coming soon</p>
-            </div>
+    <p class="member-role">${member.role}</p>
+    <h3>${member.name}</h3>
+
+    <a href="${member.linkedin}"
+       class="btn btn-primary"
+       target="_blank"
+       rel="noopener noreferrer">
+       LinkedIn Profile ↗
+    </a>
+</div>
         `;
 
         selectedMembers.appendChild(card);
