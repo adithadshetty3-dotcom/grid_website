@@ -178,7 +178,7 @@ Only describe completed work as completed. Keep planned features marked as plann
 ### Pre-commit enforcement
 A Git pre-commit hook is included in the Timeline pilot files at `.githooks/pre-commit`; it calls `scripts/check-ai-handoff.mjs`. It allows a commit only when the root `AI_HANDOFF.md` appears in the staged changed-file list, and otherwise blocks with instructions.
 
-The hook was tested in an isolated temporary Git repository: a commit without staged `AI_HANDOFF.md` was blocked, and a commit with the updated handoff staged was allowed. The hook has not yet been installed or tested in the contributor's actual local clone. Enable it from the repository root with `git config core.hooksPath .githooks` and ensure it is executable before the first project code commit. Until the contributor confirms installation in the actual clone, manually verify the rule before committing.
+**Current clone status (verified 10 November 2026):** `git config --get core.hooksPath` returns `.githooks`, and `.githooks/pre-commit` is executable. The hook ran during the Session 032 implementation commit and Session 033 handoff commit; both commit attempts printed `GRID handoff check passed: AI_HANDOFF.md is updated and staged.`
 
 ### Required workflow
 `Plan → Implement → Test → Update AI_HANDOFF.md → Stage changes → Verify handoff update → Commit`
@@ -186,44 +186,34 @@ The hook was tested in an isolated temporary Git repository: a commit without st
 ## 9. Current status and next actions
 
 ### Completed and verified
-- **Latest focused network rollback (Session 023):** the prepared local bundle restores Session 021's proximity-first star connections (one nearest link per star, 55px phone / 78px desktop radius, 320ms topology refresh, muted GRID-maroon strokes). The document-height canvas and mobile pinch-zoom handling from the supplied Session 022 snapshot remain in place. The 30 background-helper tests pass; live browser/phone rendering is still pending.
-- Inspected the shared GRID `style.css` and kept it unchanged.
-- Inspected the remote `feature/Timeline` branch; its existing `Timeline.html` remains an empty placeholder while the React/Vite pilot is kept isolated in `react-pilot/`.
-- Built the local React/Vite Timeline pilot with year grouping/navigation, category filtering, milestone cards, full detail view and a Timeline-only admin preview editor.
-- Added and locally tested the event creation, multi-photo upload, IndexedDB persistence, basic editing and deletion flow in the initial pilot; the contributor confirmed those checks passed.
-- Prepared the edit modal and visual refinement. The contributor applied the refinement bundle and reported a passing Vite production build in Session 004 (Vite 8.3.7, 18 modules, 255 ms).
-- Added separate milestone validation rules and 10 Node built-in unit tests in Session 005; `node --test src/timelineValidation.test.js` passed all 10 tests in the working artifact.
-- TypeScript's JSX parser accepted the current JSX and JavaScript source files with no syntax diagnostics in Session 005.
-- The contributor asked that `AI_HANDOFF.md` be updated after every meaningful development session, including local-only changes and sessions without a GitHub push. This requirement remains mandatory.
+- The isolated React + Vite Timeline pilot is published on `feature/Timeline` in `react-pilot/`; it is not merged into `main` and is not deployed.
+- The Timeline includes chronological milestones, year/category filters, milestone detail views and a Timeline-only Admin Preview/editor. Admin Preview is the final Timeline section.
+- Mobile uses the shared charcoal background and retains the independent white-star canvas. Stars are separate white dots without red connecting lines. The desktop crimson gradient remains unchanged.
+- Timeline spacing was refined for desktop and mobile. The root `style.css` remains unchanged.
+- All source tests under `react-pilot/src/` passed: 88/88. The production build passed. AI handoff validation and both Git whitespace checks passed for Session 032.
+- Implementation commit `33905d3d3b4507263e9f067f219dddc6199ff541` (`Complete Timeline background and layout refinements`) was pushed to `origin/feature/Timeline`.
+- Handoff publication commit `623953a51d383ec5a8d4d0c5ac443f9ba5c72c4a` (`Record Timeline publication status`) was pushed to `origin/feature/Timeline`.
+- Before preparing Session 034, fetched `origin/feature/Timeline`; local `HEAD` and `origin/feature/Timeline` both equalled `623953a51d383ec5a8d4d0c5ac443f9ba5c72c4a` (0 ahead, 0 behind). The five untracked SESSION README files were preserved.
 
-### Not completed / not yet verified
-- Session 023 is a prepared focused bundle, not yet verified in the contributor's full local repository. Apply it, then run the complete `npm test` and `npm run build` there.
-- The restored Session 021-style network has passed its 30 background-helper tests, but no desktop browser or physical-phone visual check has been run after this rollback.
-- The latest Session 005 changes have not yet been applied and browser-tested by the contributor.
-- A fresh Vite production build after Session 005 changes is still pending; the previous build PASS only covers the Session 004 version.
-- Detail-modal focus behavior, form validation feedback, unsupported image rejection, size limits, save failure messaging and Undo delete need manual browser tests.
-- The admin preview switch is not authentication. Production must use the main site's real, verified admin permission.
-- IndexedDB data and photo Blobs are local to one browser/device. Shared content needs the main site's approved API and persistent storage.
-- Demo milestones must be replaced with real GRID milestones, dates and photos verified by the team before publishing.
-- Main-site integration remains a team-level architecture decision; do not add unrelated pages, navigation, footer or a separate admin dashboard.
-- GitHub handoff synchronization is currently blocked by repository-owner GitHub App/branch permissions. Keep the local handoff current, but do not claim the remote handoff is synchronized until GitHub confirms the file/commit.
-- No current Timeline implementation changes have been committed or pushed by this workflow.
+### Not completed
+- Actual desktop browser and physical-phone visual reviews have not been performed.
+- Demo milestones still need replacement with GRID content, dates and photos verified by the team.
+- Admin Preview is a local pilot control, not production authentication. It must use the main website's verified admin permissions.
+- Milestones and photos use IndexedDB local to one browser/device. Shared backend/API integration and persistent shared storage remain pending.
+- Final integration approval from the main GRID website team remains pending.
 
 ### Next actions
-1. Apply the focused Session 023 network rollback bundle to the local `grid_website` repository root; it replaces only the listed Timeline app/module/test files and this handoff.
-2. Run `npm test` and `npm run build` from `react-pilot` in the full local repository.
-3. Verify the normal 1x network on desktop and phone, then test scrolling and phone pinch zoom. Do not change other Timeline features while checking the network.
-4. Gather only real GRID milestone information and approved photos from the team.
-5. Coordinate a shared API/auth contract before replacing the local IndexedDB adapter for production.
-6. Keep `AI_HANDOFF.md` updated locally after every meaningful session. Once repository-owner permissions are fixed, publish a handoff-only commit to `feature/Timeline` when implementation code is not authorized to publish; include handoff and implementation together when code is approved.
+1. Manually review desktop and mobile layouts, including desktop spacing and mobile scrolling from top to bottom.
+2. Check narrow widths, orientation changes, star visibility and Admin Preview interactions on a physical phone.
+3. Coordinate verified GRID content, production authentication, shared backend/storage and the final integration approach with the main GRID team.
+4. Await team review and final integration approval before merging the Timeline pilot into `main`. Do not describe it as merged or deployed.
 
 ### Run and test instructions
 - From the repository root: `cd react-pilot`.
-- Install dependencies if needed: `npm install`.
 - Start locally: `npm run dev`.
-- Run automated validation tests: `npm test`.
+- Run every source test: `node --test src/*.test.js`.
 - Verify production compilation: `npm run build`.
-- Enable the handoff pre-commit hook once per clone from repository root with `git config core.hooksPath .githooks`; on macOS/Linux/Git Bash, run `chmod +x .githooks/pre-commit` if needed.
+- `npm test` runs the configured milestone validation tests.
 - These instructions run only the isolated Timeline pilot. Browser data remains local to the current device until a shared API is integrated.
 
 ## 10. Commit / session history
@@ -2197,5 +2187,42 @@ npm run dev
 - From the repository root: `cd react-pilot`.
 - Run all source tests: `node --test src/*.test.js`.
 - Run the configured validation tests: `npm test`.
+- Build production assets: `npm run build`.
+- Start the local preview server: `npm run dev`.
+
+---
+
+## Session 034 — correct current status after Timeline publication
+
+**Date:** 10 November 2026.
+
+**Feature/task:** Documentation-only correction of the current status, pre-commit hook evidence and remaining work after Sessions 032 and 033 were successfully published.
+
+**Why and implementation:**
+- Section 9 still contained stale Session 023 implementation instructions, old pending-build statements and a false claim that the Timeline work had not been committed or pushed. Replaced its status and next steps with the verified current pilot state, actual test/build results, pushed implementation and handoff commits, remaining production work and required team review before a future merge to `main`.
+- Section 8 said the pre-commit hook had not been installed in the actual clone. Current-clone evidence confirms `core.hooksPath` is `.githooks`, `.githooks/pre-commit` is executable, and the latest project commits passed the handoff check. Corrected Section 8 accordingly.
+- Preserved all earlier session entries. No Timeline source, CSS, tests, shared stylesheet or SESSION README file was changed.
+
+**Files changed:**
+- `AI_HANDOFF.md` only.
+
+**Working currently:**
+- The Timeline pilot is pushed to `feature/Timeline`; it is not merged into `main` or deployed.
+- Before preparing Session 034, fetching `origin/feature/Timeline` confirmed local `HEAD` and the remote branch both at `623953a51d383ec5a8d4d0c5ac443f9ba5c72c4a`, with 0 ahead and 0 behind.
+- The five untracked SESSION README files remain preserved and excluded.
+
+**Verification:**
+- Source tests and production build were not rerun because this session changes documentation only. The last code verification in Session 032 was 88/88 source tests passing and a successful Vite production build.
+- AI handoff validation passed with `node scripts/check-ai-handoff.mjs`; `git diff --check` and `git diff --cached --check` passed. No source tests or production build are claimed for Session 034.
+- Current-clone hook configuration and executable status were inspected; the Session 034 commit hook runs as part of commit verification.
+
+**Remaining work:**
+- Perform desktop browser and physical-phone visual reviews, including mobile scrolling, narrow widths, orientation changes, star visibility and Admin Preview interactions.
+- Replace demo milestones with verified GRID content; coordinate production authentication, shared API/storage and final main-site integration approval with the GRID team.
+- Await team review before any merge into `main`. No merge or deployment is part of this session.
+
+**Run/test instructions:**
+- From the repository root: `cd react-pilot`.
+- Run all source tests: `node --test src/*.test.js`.
 - Build production assets: `npm run build`.
 - Start the local preview server: `npm run dev`.
