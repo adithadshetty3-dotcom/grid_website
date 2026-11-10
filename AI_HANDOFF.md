@@ -203,10 +203,76 @@ A Git pre-commit hook is included in the Timeline pilot files at `.githooks/pre-
 - Final integration approval from the main GRID website team remains pending.
 
 ### Next actions
-1. Manually review desktop and mobile layouts, including desktop spacing and mobile scrolling from top to bottom.
-2. Check narrow widths, orientation changes, star visibility and Admin Preview interactions on a physical phone.
-3. Coordinate verified GRID content, production authentication, shared backend/storage and the final integration approach with the main GRID team.
-4. Await team review and final integration approval before merging the Timeline pilot into `main`. Do not describe it as merged or deployed.
+The items below are pending. PR [#6](https://github.com/adithadshetty3-dotcom/grid_website/pull/6) was verified on 10 November 2026 as **open**, targeting `main` from `feature/Timeline`; it has not been merged. The React + Vite pilot is available for review, but the technology and integration approach still need team approval.
+
+#### A. Lead review and approval
+- [ ] Share PR #6 with the GRID team lead.
+- [ ] Obtain review and feedback on the Timeline implementation.
+- [ ] Explain the React + Vite pilot and seek approval for this approach.
+- [ ] Confirm that the Timeline design and functionality meet the team's expectations.
+- [ ] Record requested changes and complete them after approval.
+- [ ] Agree on the final integration approach with the main website team.
+- [ ] Do not merge into `main` without the required approval.
+
+#### B. Timeline Admin / content management proposal
+Pitch a Timeline-specific content management interface to the lead. This is a proposal only; the current Admin Preview is a local UI prototype, not production authentication or shared storage. The proposed interface could let authorised members add, edit and remove milestones; upload and manage photographs; enter dates, titles, descriptions and categories; preview content before publication; and potentially use draft and approval workflows.
+
+Questions for the lead:
+- [ ] Is this feature approved?
+- [ ] Should it be part of the existing main-site admin dashboard or remain a Timeline-specific area?
+- [ ] Which team members should have permission to edit it?
+- [ ] Should changes publish immediately or require approval?
+- [ ] What authentication and backend should it use?
+
+#### C. Collect historical GRID Timeline content
+- [ ] Ask the lead for previous years' Timeline information.
+- [ ] Request major events, workshops, achievements and projects.
+- [ ] Request verified dates, titles, categories and descriptions.
+- [ ] Request official photographs and relevant captions.
+- [ ] Ask for old archives, documents or spreadsheets if available.
+- [ ] Confirm the accuracy of every milestone with the team.
+- [ ] Replace demo milestones only with verified GRID content.
+
+Suggested content format: **Year, date, title, category, short summary, full description, photos, photo credits/permissions and related links.** Keep the Timeline a curated history of significant milestones, not a duplicate of the full Event Archive.
+
+#### D. Official GRID logo and branding
+- [ ] Locate existing official GRID logo assets in the repository.
+- [ ] Ask the lead/design team for the approved logo if necessary.
+- [ ] Prefer SVG; accept a transparent high-resolution PNG.
+- [ ] Request suitable light/dark variants and brand guidelines.
+- [ ] Confirm correct logo placement and size within the Timeline.
+- [ ] Coordinate with the navbar team if the logo is intended for the shared site header.
+- [ ] Keep any logo implementation within Timeline-owned components; do not modify another team's navbar.
+
+Do not invent, redraw or use an unofficial logo.
+
+#### E. Visual review and polish
+- [ ] Review the full Timeline on desktop.
+- [ ] Review it on an actual phone.
+- [ ] Test narrow widths, landscape orientation and scrolling.
+- [ ] Verify star visibility and background behavior.
+- [ ] Check logo placement, typography, spacing and readability.
+- [ ] Test all Timeline filters, details and Admin Preview actions.
+- [ ] Check keyboard navigation, focus states and reduced motion.
+- [ ] Verify image upload, display and error handling.
+- [ ] Remove or replace all demo content before production.
+
+#### F. Production integration and readiness
+- [ ] Confirm the main website's framework and routing approach.
+- [ ] Agree on how the React pilot will be integrated.
+- [ ] Confirm shared CSS and asset integration.
+- [ ] Replace IndexedDB with approved shared backend/API storage.
+- [ ] Implement real authentication and authorisation.
+- [ ] Define who can create, edit, approve and publish milestones.
+- [ ] Implement shared image storage and upload validation.
+- [ ] Test persistence across browsers and devices.
+- [ ] Coordinate production deployment and final acceptance.
+
+#### G. Optional future work
+- [ ] Consider links from Timeline milestones to Event Archive entries or relevant Journal articles where appropriate.
+- [ ] Consider GRID Journal only after Timeline is completed, reviewed and approved, and only if time permits.
+
+Do not start unrelated pages or optional Journal work now.
 
 ### Run and test instructions
 - From the repository root: `cd react-pilot`.
@@ -2220,6 +2286,39 @@ npm run dev
 - Perform desktop browser and physical-phone visual reviews, including mobile scrolling, narrow widths, orientation changes, star visibility and Admin Preview interactions.
 - Replace demo milestones with verified GRID content; coordinate production authentication, shared API/storage and final main-site integration approval with the GRID team.
 - Await team review before any merge into `main`. No merge or deployment is part of this session.
+
+**Run/test instructions:**
+- From the repository root: `cd react-pilot`.
+- Run all source tests: `node --test src/*.test.js`.
+- Build production assets: `npm run build`.
+- Start the local preview server: `npm run dev`.
+
+---
+
+## Session 035 — expand Timeline review and readiness roadmap
+
+**Date:** 10 November 2026.
+
+**Task:** Planning and handoff update to make the Timeline's review, content, branding, visual QA and production-readiness work actionable for future contributors.
+
+**Changes made:**
+- Verified PR #6 is open, targets `main` from `feature/Timeline`, and is not merged. Added its current status to Section 9.
+- Replaced the short next-actions list with a prioritised, pending-only checklist covering lead review and approval, a proposed Timeline content-management interface, historical content collection, official logo/branding, visual review, production integration/readiness and optional future work.
+- Clarified that Admin Preview remains a local UI prototype and that the proposed management system is not approved or built. Added a suggested verified milestone content format and preserved the Timeline/Event Archive scope distinction.
+- No source code, CSS, tests, shared website files or SESSION README files were changed.
+
+**Files changed:**
+- `AI_HANDOFF.md` only.
+
+**Verification performed:**
+- PR #6 metadata was checked through the GitHub connector: state open, base `main`, head `feature/Timeline`, not merged.
+- Local branch and origin matched at `6ce742bc9ae604d4deee9a106668bfe651718f00` before editing; the five untracked SESSION README files were preserved.
+- `node scripts/check-ai-handoff.mjs`: PASS after staging the updated handoff. `git diff --check` and `git diff --cached --check`: PASS.
+- No source tests or production build were run or are claimed for Session 035.
+
+**Remaining work:**
+- All Section 9 roadmap items remain pending until completed and verified; no team decision or approval is implied by this planning update.
+- Review PR #6 with the lead and coordinate Timeline-only implementation and integration decisions with the GRID teams that own shared systems.
 
 **Run/test instructions:**
 - From the repository root: `cd react-pilot`.
