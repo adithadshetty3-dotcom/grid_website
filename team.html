@@ -65,61 +65,45 @@
     
 <!-- CORE TEAM MEMBERS SECTION -->
 
+
+<!-- Six GRID team categories -->
+
+<!-- TEAM CATEGORY SELECTION -->
+
 <section class="members-section" id="members">
 
     <div class="members-header">
-        <p class="section-label">THE PEOPLE WHO MAKE IT HAPPEN</p>
-        <h2>THE CORE <span>TEAM</span></h2>
+        <p class="section-label">THE PEOPLE BEHIND GRID</p>
+        <h2>EXPLORE OUR <span>TEAMS</span></h2>
         <p class="members-intro">
-            A team of thinkers, builders and leaders
-            turning ambitious ideas into reality.
+            Six teams. One vision. Discover the people
+            who make GRID extraordinary.
         </p>
     </div>
 
-    <div class="members-grid">
+    <!-- Six clickable categories -->
+    <div id="team-categories" class="team-categories"></div>
 
-        <!-- Member 1 -->
-        <article class="member-card">
-            <div class="member-image">
-                <div class="member-placeholder">01</div>
-                <span class="member-number">GRID / 01</span>
-            </div>
-            <div class="member-info">
-                <p class="member-role">PRESIDENT</p>
-                <h3>Member Name</h3>
-                <p class="member-desc">Leading the vision of GRID.</p>
-            </div>
-        </article>
+    <!-- Selected category members -->
+    <div id="team-members-view" hidden>
 
-        <!-- Member 2 -->
-        <article class="member-card">
-            <div class="member-image">
-                <div class="member-placeholder">02</div>
-                <span class="member-number">GRID / 02</span>
-            </div>
-            <div class="member-info">
-                <p class="member-role">VICE PRESIDENT</p>
-                <h3>Member Name</h3>
-                <p class="member-desc">Driving ideas and innovation.</p>
-            </div>
-        </article>
+        <button id="back-to-teams" class="back-button">
+            ← Back to Teams
+        </button>
 
-        <!-- Member 3 -->
-        <article class="member-card">
-            <div class="member-image">
-                <div class="member-placeholder">03</div>
-                <span class="member-number">GRID / 03</span>
-            </div>
-            <div class="member-info">
-                <p class="member-role">TECHNICAL LEAD</p>
-                <h3>Member Name</h3>
-                <p class="member-desc">Building technology and solutions.</p>
-            </div>
-        </article>
+        <div class="members-header selected-header">
+            <p class="section-label">MEET THE PEOPLE</p>
+            <h2 id="selected-team-title"></h2>
+            <p id="selected-team-description"></p>
+        </div>
+
+        <div id="selected-members" class="members-grid"></div>
 
     </div>
 
 </section>
+
+
 
 
 </main>
