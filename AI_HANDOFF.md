@@ -2117,15 +2117,46 @@ npm run dev
 - No live desktop browser or physical-phone visual check was performed.
 
 **Current status and next steps:**
-- The intended Timeline changes from Sessions 031 and 032 and the pre-existing staged project are being prepared for a commit on `feature/Timeline`.
-- The five untracked SESSION README files remain excluded.
-- Check that `origin/feature/Timeline` has not diverged, commit the reviewed staged change with a clear message, and push normally. Do not merge, rebase or force-push if Git reports divergence or rejects the push.
-- After publishing, manually review desktop spacing and mobile top-to-bottom spacing, orientation changes, narrow widths, starfield visibility and admin interactions.
+- The intended Timeline changes from Sessions 031 and 032 and the pre-existing staged pilot were committed as `33905d3d3b4507263e9f067f219dddc6199ff541` (`Complete Timeline background and layout refinements`) on `feature/Timeline` and pushed successfully to `origin/feature/Timeline` without force.
+- The local branch and `origin/feature/Timeline` point to the same commit. The only remaining untracked files are `SESSION025_README.md` through `SESSION029_README.md`; they were preserved and excluded.
+- Manually review desktop spacing and mobile top-to-bottom spacing, orientation changes, narrow widths, starfield visibility and admin interactions. No actual browser/phone visual review has been performed.
 
 **Run/test instructions:**
 - From the repository root: `cd react-pilot`.
 - Run all source tests: `node --test src/*.test.js`.
 - Run the configured validation tests: `npm test`.
+- Build production assets: `npm run build`.
+- Start the local preview server: `npm run dev`.
+
+---
+
+## Session 033 — record Timeline publication
+
+**Date:** 10 November 2026.
+
+**Task:** Update this handoff after the authorized Timeline commit and push so the current branch status and remaining work are accurate.
+
+**Changes made:**
+- Recorded commit `33905d3d3b4507263e9f067f219dddc6199ff541` and successful push to `origin/feature/Timeline` in Session 032.
+- Recorded that the branch and upstream match and that the five untracked SESSION README files remain preserved and excluded.
+- Kept physical browser/phone rendering as pending visual review.
+
+**Files changed:**
+- `AI_HANDOFF.md` only.
+
+**Verification performed:**
+- `node scripts/check-ai-handoff.mjs`: PASS after staging the updated handoff.
+- `git diff --check` and `git diff --cached --check`: PASS.
+- No source tests or production build were rerun because this follow-up changes documentation only; Session 032 records the passing 88/88 tests and production build.
+
+**Current status and next steps:**
+- Session 032's Timeline implementation is committed and pushed to `feature/Timeline`.
+- Manually review the desktop and mobile layout, scroll the full mobile page, and check orientation changes, pinch zoom, star visibility, readability and Admin Preview interactions.
+- Preserve the five untracked SESSION README files; no commit or push of those files is authorized.
+
+**Run/test instructions:**
+- From the repository root: `cd react-pilot`.
+- Run all source tests: `node --test src/*.test.js`.
 - Build production assets: `npm run build`.
 - Start the local preview server: `npm run dev`.
 
