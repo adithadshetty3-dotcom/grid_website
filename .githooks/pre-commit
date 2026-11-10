@@ -1,0 +1,8 @@
+#!/bin/sh
+# GRID project rule: every commit must include an updated, staged AI_HANDOFF.md.
+ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 1
+if ! command -v node >/dev/null 2>&1; then
+  echo "GRID commit blocked: Node.js is required to verify AI_HANDOFF.md." >&2
+  exit 1
+fi
+node "$ROOT_DIR/scripts/check-ai-handoff.mjs"
