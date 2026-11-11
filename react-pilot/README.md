@@ -37,6 +37,10 @@ The pilot imports the repository-root `style.css` from `src/main.jsx`. Keep this
 - A successful delete can be undone until another milestone is saved or the page is refreshed.
 - The event-detail dialog traps keyboard focus and returns focus to the triggering element when it closes.
 
+## Separate Timeline Admin API foundation
+
+An isolated Flask backend is available in [`backend/`](backend/README.md). The Timeline-only admin uses backend authentication and milestone APIs, and public rendering merges published API milestones with the existing read-only IndexedDB records. IndexedDB records and Blob photos remain preserved locally; administrators can review and explicitly import them. Page configuration still uses localStorage. Follow the backend guide to create a Python virtual environment, configure the API secret, apply SQLite migrations, create an initial admin, and run backend tests.
+
 ## Validation tests
 
 The milestone validation rules use Node's built-in test runner; no extra test dependency is needed:

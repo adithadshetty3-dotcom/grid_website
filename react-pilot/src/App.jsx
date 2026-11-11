@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import TimelinePageBuilder from './TimelinePageBuilder.jsx';
+import TimelineAdmin from './TimelineAdmin.jsx';
+import { listPublicMilestones, orderTimelineMilestones } from './timelineAdminApi.js';
+import { mergeTimelineMilestones } from './timelinePublicData.js';
 import {
   cloneTimelinePageConfig,
   createPageWidget,
@@ -52,7 +56,7 @@ function formatDate(value, options = { day: 'numeric', month: 'long', year: 'num
 }
 
 function sortMilestones(items) {
-  return [...items].sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''));
+  return orderTimelineMilestones(items);
 }
 
 function StoredPhoto({ image, className = '', alt = 'Timeline milestone photograph', loading = 'lazy' }) {
@@ -68,6 +72,9 @@ function StoredPhoto({ image, className = '', alt = 'Timeline milestone photogra
     return () => URL.revokeObjectURL(objectUrl);
   }, [image]);
 
+  if (!url && image?.url) {
+    return <img className={className} src={image.url} alt={alt} loading={loading} decoding="async" referrerPolicy="no-referrer" />;
+  }
   if (!url) {
     return (
       <div className={`photo-placeholder ${className}`} aria-label="No photograph added">
@@ -247,6 +254,7 @@ function MilestoneDetails({ milestone, onClose, onEdit, onDelete, isAdmin, actio
 }
 
 function MilestoneEditor({ milestone, onSave, onCancel, onDraftChange, saving, saveError }) {
+  const portalRef = useRef(null);
   const titleInputRef = useRef(null);
   const closeButtonRef = useRef(null);
   const cancelRef = useRef(onCancel);
@@ -289,10 +297,23 @@ function MilestoneEditor({ milestone, onSave, onCancel, onDraftChange, saving, s
       }
     };
 
+    const updateViewportHeight = () => {
+      const height = window.visualViewport?.height || window.innerHeight;
+      const top = window.visualViewport?.offsetTop || 0;
+      portalRef.current?.style.setProperty('--tl-editor-viewport-height', `${height}px`);
+      portalRef.current?.style.setProperty('--tl-editor-viewport-top', `${top}px`);
+    };
+    const visualViewport = window.visualViewport;
+    updateViewportHeight();
+
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('resize', updateViewportHeight, { passive: true });
+    visualViewport?.addEventListener('resize', updateViewportHeight, { passive: true });
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', updateViewportHeight);
+      visualViewport?.removeEventListener('resize', updateViewportHeight);
       document.body.style.overflow = previousOverflow;
       if (previouslyFocused?.isConnected) previouslyFocused.focus();
     };
@@ -367,7 +388,8 @@ function MilestoneEditor({ milestone, onSave, onCancel, onDraftChange, saving, s
     });
   };
 
-  return (
+  return createPortal(
+    <div ref={portalRef} className="timeline-shell timeline-editor-portal">
     <div className="editor-modal-backdrop" role="presentation" onClick={(event) => {
       if (event.target === event.currentTarget && !saving) onCancel();
     }}>
@@ -454,11 +476,18 @@ function MilestoneEditor({ milestone, onSave, onCancel, onDraftChange, saving, s
       </form>
       </section>
     </div>
+    </div>,
+    document.body,
   );
 }
 
 export default function App() {
-  const [milestones, setMilestones] = useState([]);
+  const [localMilestones, setLocalMilestones] = useState([]);
+  const [publishedMilestones, setPublishedMilestones] = useState([]);
+  const milestones = useMemo(
+    () => mergeTimelineMilestones(localMilestones, publishedMilestones),
+    [localMilestones, publishedMilestones],
+  );
   const [loading, setLoading] = useState(true);
   const [storageError, setStorageError] = useState('');
   const [activeYear, setActiveYear] = useState('all');
@@ -471,9 +500,12 @@ export default function App() {
   const [editorError, setEditorError] = useState('');
   const [lastDeleted, setLastDeleted] = useState(null);
 
-  // This visible switch is strictly for local UI review. It is not authentication.
-  // Replace it with the main site's verified admin permission before deployment.
-  const [adminPreview, setAdminPreview] = useState(false);
+  const refreshPublishedMilestones = useCallback(async () => {
+    const items = await listPublicMilestones();
+    setPublishedMilestones(items);
+    return items;
+  }, []);
+
   const [pageConfig, setPageConfig] = useState(() => loadTimelinePageConfig());
   const [pageDraft, setPageDraft] = useState(null);
   const [pageBuilderOpen, setPageBuilderOpen] = useState(false);
@@ -689,10 +721,33 @@ export default function App() {
 
   useEffect(() => {
     let active = true;
-    loadMilestones()
-      .then((items) => { if (active) setMilestones(sortMilestones(items)); })
-      .catch((error) => { if (active) setStorageError(error.message || 'Could not load Timeline data.'); })
-      .finally(() => { if (active) setLoading(false); });
+    const loadPublicAndLocal = async () => {
+      const [localResult, publicResult] = await Promise.allSettled([
+        loadMilestones({ seedWhenEmpty: false }),
+        listPublicMilestones(),
+      ]);
+      if (!active) return;
+
+      if (localResult.status === 'fulfilled') setLocalMilestones(sortMilestones(localResult.value));
+      if (publicResult.status === 'fulfilled') setPublishedMilestones(publicResult.value);
+
+      if (localResult.status === 'rejected' && publicResult.status === 'rejected') {
+        setStorageError(localResult.reason?.message || publicResult.reason?.message || 'Could not load Timeline data.');
+      } else if (localResult.status === 'rejected') {
+        setStorageError(localResult.reason?.message || 'Legacy browser milestones could not be loaded.');
+      } else if (publicResult.status === 'rejected' && localResult.value.length === 0) {
+        // Preserve the existing local demo fallback only when the public API is
+        // unavailable and no browser records exist. A healthy API never causes
+        // fresh demo content to be written over an empty local store.
+        try {
+          const fallback = await loadMilestones();
+          if (active) setLocalMilestones(sortMilestones(fallback));
+        } catch (error) {
+          if (active) setStorageError(error.message || 'Could not load the local Timeline fallback.');
+        }
+      }
+    };
+    loadPublicAndLocal().finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, []);
 
@@ -751,7 +806,7 @@ export default function App() {
         updatedAt: now,
       };
       await saveMilestone(saved);
-      setMilestones((items) => sortMilestones([...items.filter((item) => item.id !== saved.id), saved]));
+      setLocalMilestones((items) => sortMilestones([...items.filter((item) => item.id !== saved.id), saved]));
       setEditorOpen(false);
       setEditingMilestone(null);
       setSelectedMilestone(null);
@@ -773,7 +828,7 @@ export default function App() {
     try {
       setStorageError('');
       await removeMilestone(selectedMilestone.id);
-      setMilestones((items) => items.filter((item) => item.id !== selectedMilestone.id));
+      setLocalMilestones((items) => items.filter((item) => item.id !== selectedMilestone.id));
       setLastDeleted(selectedMilestone);
       setSelectedMilestone(null);
       setStorageError('');
@@ -787,7 +842,7 @@ export default function App() {
     if (!lastDeleted) return;
     try {
       await saveMilestone(lastDeleted);
-      setMilestones((items) => sortMilestones([...items.filter((item) => item.id !== lastDeleted.id), lastDeleted]));
+      setLocalMilestones((items) => sortMilestones([...items.filter((item) => item.id !== lastDeleted.id), lastDeleted]));
       setLastDeleted(null);
       setActiveYear('all');
       setActiveCategory('All');
@@ -984,7 +1039,6 @@ export default function App() {
                       <span className="empty-kicker">NO MILESTONES FOUND</span>
                       <h3>{milestones.length ? 'Try another filter.' : 'The first chapter is waiting.'}</h3>
                       <p>{milestones.length ? 'Choose another year or category to see more of the journey.' : 'Once verified milestones are added, they will appear here in chronological order.'}</p>
-                      {adminPreview && !milestones.length && <button type="button" className="btn btn-primary" onClick={startCreate}>Add the first milestone</button>}
                     </div>
                   ) : activePageConfig.layout === 'horizontal' ? (
                     <div className="timeline-horizontal-scroller-wrap">
@@ -1034,51 +1088,21 @@ export default function App() {
 
       <MilestoneDetails
         milestone={selectedMilestone}
-        isAdmin={adminPreview}
+        isAdmin={false}
         actionError={storageError}
         onClose={() => setSelectedMilestone(null)}
         onEdit={startEdit}
         onDelete={handleDelete}
       />
 
-      <section className="timeline-admin-preview" aria-label="Admin Preview">
-        <div className="preview-toolbar liquid-glass">
-          <div className="preview-note"><span className="preview-note-dot" /> INTERACTIVE TIMELINE PREVIEW</div>
-          <button type="button" className={`admin-toggle ${adminPreview ? 'is-active' : ''}`} onClick={() => {
-            setAdminPreview((value) => !value);
-            setEditorOpen(false);
-            setEditingMilestone(null);
-            setPageBuilderOpen(false);
-            setPageDraft(null);
-          }}>
-            <span aria-hidden="true">{adminPreview ? '✓' : '＋'}</span> {adminPreview ? 'Exit admin preview' : 'Admin preview'}
+      <TimelineAdmin MilestoneEditorComponent={MilestoneEditor} onPublicMilestonesChange={refreshPublishedMilestones}>
+        <div className="timeline-admin-page-settings">
+          <button type="button" className="btn btn-ghost" onClick={pageBuilderOpen ? discardPageDraft : openPageBuilder}>
+            {pageBuilderOpen ? 'Close page settings' : 'Edit Timeline page layout'}
           </button>
+          <p>Page layout settings remain stored in this browser and are separate from server milestone content.</p>
         </div>
-
-        {adminPreview && (
-          <div className="admin-preview-warning" role="status">
-            <strong>Preview mode only.</strong> This switch is not a login system. Before launch, connect it to the main website's authenticated admin permissions and shared API. Page settings and milestone edits in this pilot are saved only in this browser.
-          </div>
-        )}
-        {storageError && <div className="notice notice-error" role="alert">{storageError}</div>}
-        {notice && (
-          <div className="notice notice-with-action" role="status">
-            <span>{notice}</span>
-            {lastDeleted && <button type="button" className="notice-undo" onClick={handleUndoDelete}>Undo delete</button>}
-          </div>
-        )}
-
-        {adminPreview && !editorOpen && (
-          <div className="admin-action-row liquid-glass">
-            <div><span className="eyebrow">CONTENT MANAGEMENT</span><strong>Manage this Timeline page</strong></div>
-            <div className="admin-action-buttons">
-              <button type="button" className="btn btn-ghost" onClick={openPageBuilder}>Edit page widgets</button>
-              <button type="button" className="btn btn-primary" onClick={startCreate}>＋ Add milestone</button>
-            </div>
-          </div>
-        )}
-
-        {adminPreview && pageBuilderOpen && !editorOpen && (
+        {pageBuilderOpen && (
           <TimelinePageBuilder
             config={pageDraft || pageConfig}
             onLayoutChange={changePageLayout}
@@ -1091,19 +1115,7 @@ export default function App() {
             onCancel={discardPageDraft}
           />
         )}
-
-        {editorOpen && adminPreview && (
-          <MilestoneEditor
-            key={editingMilestone?.id || 'new-milestone'}
-            milestone={editingMilestone}
-            saving={saving}
-            saveError={editorError}
-            onDraftChange={() => setEditorError('')}
-            onSave={handleSave}
-            onCancel={() => { setEditorOpen(false); setEditingMilestone(null); }}
-          />
-        )}
-      </section>
+      </TimelineAdmin>
 
     </main>
   );

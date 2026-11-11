@@ -5,9 +5,10 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const [app, builder, css, baseCss] = await Promise.all([
+const [app, builder, admin, css, baseCss] = await Promise.all([
   readFile(path.join(here, 'App.jsx'), 'utf8'),
   readFile(path.join(here, 'TimelinePageBuilder.jsx'), 'utf8'),
+  readFile(path.join(here, 'TimelineAdmin.jsx'), 'utf8'),
   readFile(path.join(here, 'timelineModular.css'), 'utf8'),
   readFile(path.join(here, 'timeline.css'), 'utf8'),
 ]);
@@ -107,19 +108,22 @@ test('mobile uses a consistent charcoal background while the document star canva
   assert.match(app, /<div ref=\{ambienceRef\} className="timeline-ambience"[\s\S]*?<canvas className="ambient-network" \/>/);
 });
 
-test('Admin Preview is the final Timeline section after the page widgets', () => {
+test('authenticated Timeline admin section follows public content and owns page settings', () => {
   const widgetIndex = app.indexOf('<div className={`timeline-page-widgets');
   const detailsIndex = app.indexOf('<MilestoneDetails');
-  const adminStart = app.indexOf('<section className="timeline-admin-preview"');
-  const adminEnd = app.indexOf('</section>', adminStart);
-  const mainEnd = app.indexOf('</main>', adminEnd);
+  const adminStart = app.indexOf('<TimelineAdmin MilestoneEditorComponent={MilestoneEditor} onPublicMilestonesChange={refreshPublishedMilestones}>');
+  const adminEnd = app.indexOf('</TimelineAdmin>', adminStart);
   assert.ok(widgetIndex >= 0 && widgetIndex < detailsIndex, 'Timeline widgets precede the detail dialog');
   assert.ok(detailsIndex < adminStart, 'the detail dialog precedes the final admin section');
-  assert.ok(adminStart < adminEnd && adminEnd < mainEnd, 'Admin Preview is inside the Timeline shell');
-  assert.match(app.slice(adminStart, adminEnd), /className="preview-toolbar liquid-glass"/);
-  assert.match(app.slice(adminStart, adminEnd), /className=\{`admin-toggle/);
+  assert.ok(adminStart < adminEnd && adminEnd < app.indexOf('</main>', adminEnd), 'Admin section is inside the Timeline shell');
+  assert.match(admin, /<section className="timeline-admin-preview" aria-label="Timeline administration">/);
+  assert.match(admin, /className="preview-toolbar liquid-glass"/);
+  assert.match(admin, /restoreAdminSession\(\)/);
+  assert.match(admin, /\{children\}/);
   assert.match(app.slice(adminStart, adminEnd), /<TimelinePageBuilder/);
-  assert.match(app.slice(adminStart, adminEnd), /<MilestoneEditor/);
+  assert.match(app, /<MilestoneDetails[\s\S]*?isAdmin=\{false\}/);
+  assert.match(admin, /!admin \? <form className="timeline-admin-login"/);
+  assert.match(admin, /\{children\}/);
   assert.match(baseCss, /\.timeline-shell \.timeline-admin-preview\s*\{[^}]*width:\s*min\(1120px, calc\(100% - 48px\)\)/s);
   assert.match(baseCss, /@media \(max-width: 760px\)[\s\S]*?\.timeline-shell \.timeline-admin-preview\s*\{[^}]*max-width:\s*620px/s);
 });

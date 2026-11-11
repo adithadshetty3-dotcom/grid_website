@@ -44,6 +44,41 @@ function transactionDone(transaction) {
   });
 }
 
+/** Read the existing browser store without seeding demos or writing records. */
+export async function inspectLocalMilestones() {
+  if (!('indexedDB' in window)) throw new Error('This browser does not support IndexedDB.');
+  const database = await new Promise((resolve, reject) => {
+    const request = window.indexedDB.open(DATABASE_NAME);
+    request.onupgradeneeded = (event) => {
+      // Opening a missing database would otherwise create it. Abort the upgrade
+      // so this review operation never creates or mutates local storage.
+      event.preventDefault();
+      request.transaction?.abort();
+      reject(new Error('No existing Timeline browser database was found.'));
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('Could not inspect Timeline browser data.'));
+    request.onblocked = () => reject(new Error('Timeline storage is blocked by another browser tab.'));
+  });
+
+  try {
+    if (!database.objectStoreNames.contains(STORE_NAME)) {
+      throw new Error('The existing Timeline browser database has an unexpected schema; it was not changed.');
+    }
+    const transaction = database.transaction(STORE_NAME, 'readonly');
+    const done = transactionDone(transaction);
+    const milestones = await requestResult(transaction.objectStore(STORE_NAME).getAll());
+    await done;
+    return milestones;
+  } finally {
+    database.close();
+  }
+}
+
+export function countLocalMilestonePhotos(milestones = []) {
+  return milestones.reduce((count, milestone) => count + (milestone.images || []).length, 0);
+}
+
 function createDemoMilestones() {
   return [
     {
@@ -77,7 +112,7 @@ function createDemoMilestones() {
   ];
 }
 
-export async function loadMilestones() {
+export async function loadMilestones({ seedWhenEmpty = true } = {}) {
   const database = await openDatabase();
   try {
     const readTransaction = database.transaction(STORE_NAME, 'readonly');
@@ -85,7 +120,7 @@ export async function loadMilestones() {
     const existing = await requestResult(readTransaction.objectStore(STORE_NAME).getAll());
     await readDone;
 
-    if (existing.length === 0 && !window.localStorage.getItem(DEMO_FLAG)) {
+    if (seedWhenEmpty && existing.length === 0 && !window.localStorage.getItem(DEMO_FLAG)) {
       const demoItems = createDemoMilestones();
       const writeTransaction = database.transaction(STORE_NAME, 'readwrite');
       const writeDone = transactionDone(writeTransaction);

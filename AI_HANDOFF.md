@@ -150,6 +150,16 @@ Rules:
 
 **Also update this file after every meaningful project work session or implementation change, even when the work remains local and no commit or push is planned.** A handoff update is part of the work itself, not something reserved for publishing. Record feedback, decisions, local changes, test results and the next steps factually. Keep the local handoff current; stage it with the code only when a commit is later authorized.
 
+### Handoff Update Rule
+- Read `AI_HANDOFF.md` before every project task.
+- Record every meaningful project-related plan, decision, discovery, audit, implementation, test result, blocker and change of direction.
+- Record plans as **PLANNED**, not completed.
+- After implementation, record the exact files changed and actual verification results.
+- Record read-only investigations too, including when no source files changed.
+- Keep current status, pending work and next steps accurate.
+- Never claim tests, commits, pushes, merges or deployments that were not verified.
+- Update this file before finishing every project task.
+
 Every update must explain:
 1. What we changed.
 2. Why we changed it.
@@ -187,10 +197,15 @@ A Git pre-commit hook is included in the Timeline pilot files at `.githooks/pre-
 
 ### Completed and verified
 - The isolated React + Vite Timeline pilot is published on `feature/Timeline` in `react-pilot/`; it is not merged into `main` and is not deployed.
-- The Timeline includes chronological milestones, year/category filters, milestone detail views and a Timeline-only Admin Preview/editor. Admin Preview is the final Timeline section.
+- The Timeline includes milestone views, filters, details, and a Timeline-only admin panel at the end of the page. The panel now uses backend authentication; it is no longer a local authentication toggle.
 - Mobile uses the shared charcoal background and retains the independent white-star canvas. Stars are separate white dots without red connecting lines. The desktop crimson gradient remains unchanged.
 - Timeline spacing was refined for desktop and mobile. The root `style.css` remains unchanged.
 - All source tests under `react-pilot/src/` passed: 88/88. The production build passed. AI handoff validation and both Git whitespace checks passed for Session 032.
+- Added an isolated Timeline-only Flask API foundation under `react-pilot/backend/`: application factory, SQLite/SQLAlchemy models and initial Alembic migration, interactive admin provisioning CLI, scrypt password hashes, database-backed revocable admin sessions, CSRF validation, login rate limiting, and auth/session endpoints. The Vite development server proxies `/api` to the local Flask service.
+- Backend security tests passed 11/11, the initial migration was applied and passed Alembic drift checking against a fresh temporary SQLite database, the existing Timeline source tests passed 88/88, and the production build passed for Session 036.
+- Phase 1.1 backend hardening is now implemented locally: production configuration fails closed unless session cookies are Secure and a shared Redis limiter URI is configured; admin-route authorization validates expiry, active status and session version; account lifecycle helpers revoke all sessions; login uses both account/IP and IP-wide limits; unknown usernames receive dummy scrypt verification; session GETs are read-only; CLI/login password maximums match; and newly created SQLite data paths receive restrictive permissions.
+- Phase 1.1 verification: backend tests passed 26/26 using in-memory SQLite/memory limiter storage plus isolated temporary database permission checks; all Timeline source tests passed 88/88; migrations 0001 and 0002 upgraded a temporary SQLite database and `flask db check` reported no drift. A production Vite build was not run for this backend-only phase.
+- Backend documentation describes environment variables, setup, migration, admin creation, API endpoints, tests and deployment limitations. The admin panel now uses the Timeline milestone API; public rendering remains on the existing browser content source.
 - Implementation commit `33905d3d3b4507263e9f067f219dddc6199ff541` (`Complete Timeline background and layout refinements`) was pushed to `origin/feature/Timeline`.
 - Handoff publication commit `623953a51d383ec5a8d4d0c5ac443f9ba5c72c4a` (`Record Timeline publication status`) was pushed to `origin/feature/Timeline`.
 - Before preparing Session 034, fetched `origin/feature/Timeline`; local `HEAD` and `origin/feature/Timeline` both equalled `623953a51d383ec5a8d4d0c5ac443f9ba5c72c4a` (0 ahead, 0 behind). The five untracked SESSION README files were preserved.
@@ -198,12 +213,60 @@ A Git pre-commit hook is included in the Timeline pilot files at `.githooks/pre-
 ### Not completed
 - Actual desktop browser and physical-phone visual reviews have not been performed.
 - Demo milestones still need replacement with GRID content, dates and photos verified by the team.
-- Admin Preview is a local pilot control, not production authentication. It must use the main website's verified admin permissions.
-- Milestones and photos use IndexedDB local to one browser/device. Shared backend/API integration and persistent shared storage remain pending.
+- The current public Timeline still reads the pre-existing IndexedDB data and browser-local demo records. It does not yet display server-published milestones. No local data migration or cutover has occurred.
+- The authenticated admin panel manages backend milestones, but production deployment, real-browser/mobile review, team integration approval and production authentication deployment configuration remain pending.
+- Existing browser Blob photos remain in IndexedDB and are not copied to the API. API milestone references can be edited as URL references; secure shared upload/storage is a separate pending phase.
 - Final integration approval from the main GRID website team remains pending.
+- The backend provides published-only public reads and authenticated Timeline admin list/create/edit/delete/reorder endpoints. The dashboard uses those admin endpoints, but public frontend cutover to published API data is intentionally pending until existing browser content can be preserved and the server content is ready.
+- No production deployment or real-world security review has been performed. Production startup now rejects memory rate-limit storage and insecure cookies, but the deployment must supply a durable shared Redis service and verify its persistence policy, HTTPS/proxy configuration and production WSGI setup. No hosting or credentials were changed.
 
 ### Next actions
 The items below are pending. PR [#6](https://github.com/adithadshetty3-dotcom/grid_website/pull/6) was verified on 10 November 2026 as **open**, targeting `main` from `feature/Timeline`; it has not been merged. The React + Vite pilot is available for review, but the technology and integration approach still need team approval.
+
+#### Current backend foundation — Phases 1, 1.1 and 2 complete locally
+- The separate Flask authentication foundation and both SQLite migrations are implemented and covered by backend security tests.
+- Phase 1.1 session, authorization, CSRF separation, account/IP throttling, production fail-closed checks, file-permission handling and regression coverage are implemented locally; no content CRUD endpoints were added.
+- Phase 2 adds a persistent milestone model and migration plus public published reads and server-authorized admin CRUD/reordering. It validates content and image references, makes reorder requests all-or-nothing, and does not seed or import events.
+- Phase 2 did not connect to or replace IndexedDB, localStorage, or the Admin Preview; it did not change another GRID service or shared system. Phase 3.1 now adds authenticated Timeline image upload/storage and an explicit local-data review/import flow; page-configuration endpoints remain unimplemented.
+- Session 040's read-only review found no confirmed admin-authentication bypass or public draft access. Phase 3 must account for the existing UI's chronological sort and IndexedDB Blob photo format, which differ from the API's `sortOrder` and URL-reference format. Potential image-source policy and concurrent-ordering concerns are recorded in Session 040; no fixes were made in that audit.
+- Before production use, configure and verify durable shared Redis, HTTPS/proxy and WSGI deployment; complete team review and integration decisions; and move image storage to approved durable shared storage.
+
+#### Phase 3 — real Timeline admin dashboard integration (implemented locally; public API integration active)
+- The Timeline-only admin panel now restores and checks the backend session, signs in/out through the auth API, and provides milestone listing, counts, search/status filters, create/edit/delete, publication toggles and manual ordering.
+- Admin mutations send CSRF headers and omit server-owned IDs, timestamps and ordering fields. The API remains the authority for validation and authorization; no admin creation or frontend-only authorization was added.
+- Dashboard page-layout settings remain browser-local and are labeled as such. The public Timeline now loads published server records and merges them with read-only IndexedDB records; drafts are never included. Existing local-only records remain visible until a reviewed import is completed.
+- Session 041 verification: all Timeline source tests passed 98/98; isolated backend tests passed 40/40; Vite production build passed; `git diff --check` passed. No browser or physical-device visual testing was performed. Handoff validation requires `AI_HANDOFF.md` to be staged, and no staging is authorized in this work session.
+- The exact Session 041 implementation files and compatibility details are listed below. Preserve IndexedDB/localStorage data and Blob photos; no migration/import/delete was performed.
+- The local Timeline development database is now initialized at the default user-data path and is at `0003_timeline_milestones (head)`. It was absent before this task, contains no admin/session/milestone rows, and has no provisioned admin account. Create one with the documented CLI only after setting a persistent local `TIMELINE_SECRET_KEY`.
+- Session 043 records Phase 3.1 editor/image work and its review-before-import strategy. Session 044 records Phase 3.2 public API integration and modal portal fix.
+
+#### Phase 3.1 — editor, image storage and browser-data preservation (implementation partial)
+- The original full `MilestoneEditor` from the Timeline pilot is now passed into the authenticated dashboard. Its original modal, fields, counters, multi-file input, previews/removal, retained existing image references, scrollable body and fixed action area remain in use. New Blob photos upload before milestone JSON is saved; milestone JSON carries only server references, not Blob/base64 data.
+- The backend adds migration `0004_timeline_private_images`, private disk storage outside the repository, random opaque filenames, raster decoding/format checks, 10 MiB per-file, 8,000-pixel/32-million-pixel bounds and 8-image/40 MiB per-milestone limits. Uploads require an authenticated admin and CSRF. Public image responses are available only when referenced by a published milestone; draft/unlinked images return 404 to public users. Image files are retained on unpublish/delete to avoid data loss.
+- An authenticated, explicit IndexedDB review/import panel reports local record/photo counts, lets the admin select records, imports Blob photos as separate managed images, forces imports to drafts, uses stable source IDs for idempotent retries, and never deletes the browser source records/photos. The local browser store's actual contents were not readable in this environment, so no import was run.
+- Session 043 had left the public Timeline on IndexedDB. Session 044 adds the published API merge; actual browser records still have not been inspected or imported.
+- Production shared image storage is not configured. The local disk implementation is development-only; production requires approved durable shared storage mounted/available to all app workers, with backups, retention and deployment access controls. No storage provider or credentials were added.
+- Session 043 validation: all Timeline source tests passed **101/101**; backend unittest suite passed **46/46** using isolated in-memory DBs and temporary image directories; production Vite build passed. Migrations 0001–0004 upgraded a temporary SQLite database to `0004_timeline_private_images` and `flask db check` reported no schema drift; the new image table and milestone `source_id` column were inspected. Browser/device visual testing was not performed. Git whitespace checks passed; the handoff validator required staging, which was not authorized.
+- Files changed in this phase: `react-pilot/backend/README.md`, `react-pilot/backend/requirements.txt`, `react-pilot/backend/app/__init__.py`, `react-pilot/backend/app/config.py`, `react-pilot/backend/app/images.py`, `react-pilot/backend/app/milestones.py`, `react-pilot/backend/app/models.py`, `react-pilot/backend/migrations/versions/0004_timeline_private_images.py`, `react-pilot/backend/tests/test_milestones.py`, `react-pilot/src/App.jsx`, `react-pilot/src/TimelineAdmin.jsx`, `react-pilot/src/timelineAdminApi.js`, `react-pilot/src/timelineAdminApi.test.js`, `react-pilot/src/timelineAdminDesign.test.js`, `react-pilot/src/timeline.css`, `react-pilot/src/timelinePageBuilderDesign.test.js`, and `react-pilot/src/timelineRepository.js`. `AI_HANDOFF.md` records the phase plan and actual results.
+- Next: inspect/review actual browser IndexedDB records in an authorized browser context and run the explicit import review/idempotency check without deleting source data. Session 044 adds server/local merge and source-ID duplicate suppression. Complete browser/phone visual and upload testing; obtain approval and configure production-grade shared image storage before deployment.
+
+#### Phase 3.2 — editor portal, published public data and responsive QA (implementation locally complete; visual QA pending)
+- The modal clipping cause was the editor's fixed backdrop being mounted inside `.timeline-admin-panel.liquid-glass`. Its `backdrop-filter` creates a fixed-position containing block, so fixed positioning was relative to the dashboard panel instead of the viewport. The editor now uses `ReactDOM.createPortal` into a body-level wrapper that retains `.timeline-shell` style scope and clears wrapper isolation/positioning. Desktop uses a centered viewport-bounded 860px dialog with independently scrolling content and visible actions; mobile uses visual-viewport height/offset values for the full-screen sheet and keyboard/address-bar resizing. Existing Escape handling, body scroll lock, focus trap and restoration remain.
+- The public app now fetches `GET /api/timeline/milestones`, validates that every returned item is published, and merges those items with the readonly IndexedDB copy. Server source IDs identify imported legacy rows; the canonical server row is displayed instead of its still-preserved local duplicate. Unimported local records and Blob photos remain visible. API failure falls back to local content; it does not create demo rows when the API is healthy. Existing demos are seeded only by the legacy fallback when the API is unavailable and the local store is empty.
+- Successful admin create/edit/publish/unpublish/delete/reorder/import operations refresh admin data and the public published list. Server responses remain canonical; failed mutations leave the editor or existing cards intact. New items are clearly labeled as drafts until explicitly published. Public image rendering supports both Blob object URLs and server-managed URL references. Server publication and image privacy checks remain authoritative.
+- Responsive automation is not installed in this checkout and no browser executable is available. No visual viewport run was performed at 1440×900, 1366×768, 1280×720, 1024×768, 768×1024, 430×932, 390×844, 375×812, 360×800, or phone landscape. Manual checks at those sizes remain required, especially modal focus/keyboard, no horizontal overflow, photo grids, dashboard controls and public cards.
+- Verification: all Timeline source tests passed **107/107**; backend unittest suite passed **47/47** using isolated in-memory databases and temporary upload directories; `npm run build` passed. Migrations 0001–0004 and `db check` were verified against a temporary SQLite database. `git diff --check` and `git diff --cached --check` passed. `node scripts/check-ai-handoff.mjs` exited 1 because it requires `AI_HANDOFF.md` to be staged; no staging was authorized. No source browser tests could be run.
+- Public migration limitations: local-only legacy records remain displayed, but they do not become shared or canonical until reviewed/imported. Public API imported `sourceId` is exposed only for imported published items to support duplicate suppression. The profile's actual IndexedDB contents remain unknown and untouched. Local filesystem upload storage is not production-ready; configure approved durable shared storage.
+
+#### Next Phase — browser review and deployment validation (pending)
+- [ ] Review/import existing browser data explicitly, preserving all original IndexedDB records and Blob photos.
+- [x] Connect public rendering to published API milestones with local-data fallback and source-ID duplicate suppression (Session 044; browser visual validation remains pending).
+- [ ] Configure approved durable shared image storage; current local disk storage is development-only.
+- [ ] Confirm whether page configuration should remain local or receive a separately approved API.
+- [ ] Review the API/authentication approach and deployment assumptions with the GRID team.
+- [ ] Prepare a reviewed, non-destructive cutover from existing browser content to server-published content; keep local data intact until then.
+- [ ] Test CSRF, session expiry/revocation, persistence, image display and authorization in desktop browsers and physical mobile devices, including the approved deployment topology.
+- [ ] Verify production HTTPS, shared Redis, reverse-proxy and WSGI configuration before deployment.
 
 #### A. Lead review and approval
 - [ ] Share PR #6 with the GRID team lead.
@@ -215,14 +278,14 @@ The items below are pending. PR [#6](https://github.com/adithadshetty3-dotcom/gr
 - [ ] Do not merge into `main` without the required approval.
 
 #### B. Timeline Admin / content management proposal
-Pitch a Timeline-specific content management interface to the lead. This is a proposal only; the current Admin Preview is a local UI prototype, not production authentication or shared storage. The proposed interface could let authorised members add, edit and remove milestones; upload and manage photographs; enter dates, titles, descriptions and categories; preview content before publication; and potentially use draft and approval workflows.
+The Timeline-specific admin dashboard is implemented locally and uses the Timeline backend for authentication and milestone CRUD. Production integration and feature approval remain pending. Pitch the proposal and workflow to the lead. Current capabilities include adding, editing, deleting, ordering, publishing and drafting milestones, plus searching/filtering and an editor for API-approved URL photo references. It does not provide image upload or production-shared storage; those require a separate secure storage phase. Draft and approval workflow policy remains a team decision.
 
 Questions for the lead:
 - [ ] Is this feature approved?
 - [ ] Should it be part of the existing main-site admin dashboard or remain a Timeline-specific area?
 - [ ] Which team members should have permission to edit it?
 - [ ] Should changes publish immediately or require approval?
-- [ ] What authentication and backend should it use?
+- [ ] Should Timeline authentication remain isolated or integrate with the main site's approved admin authentication?
 
 #### C. Collect historical GRID Timeline content
 - [ ] Ask the lead for previous years' Timeline information.
@@ -252,17 +315,17 @@ Do not invent, redraw or use an unofficial logo.
 - [ ] Test narrow widths, landscape orientation and scrolling.
 - [ ] Verify star visibility and background behavior.
 - [ ] Check logo placement, typography, spacing and readability.
-- [ ] Test all Timeline filters, details and Admin Preview actions.
+- [ ] Test all Timeline filters, details and authenticated dashboard actions.
 - [ ] Check keyboard navigation, focus states and reduced motion.
-- [ ] Verify image upload, display and error handling.
+- [ ] Verify existing image-reference display and error handling; test upload only after secure shared image storage is implemented.
 - [ ] Remove or replace all demo content before production.
 
 #### F. Production integration and readiness
 - [ ] Confirm the main website's framework and routing approach.
 - [ ] Agree on how the React pilot will be integrated.
 - [ ] Confirm shared CSS and asset integration.
-- [ ] Replace IndexedDB with approved shared backend/API storage.
-- [ ] Implement real authentication and authorisation.
+- [ ] Review and approve a public-content cutover from current IndexedDB content to published API content; preserve browser data until the migration path is approved.
+- [ ] Approve and configure Timeline authentication/authorization for production or agree on the main-site integration approach.
 - [ ] Define who can create, edit, approve and publish milestones.
 - [ ] Implement shared image storage and upload validation.
 - [ ] Test persistence across browsers and devices.
@@ -2325,3 +2388,520 @@ npm run dev
 - Run all source tests: `node --test src/*.test.js`.
 - Build production assets: `npm run build`.
 - Start the local preview server: `npm run dev`.
+
+---
+
+## Session 036 — establish isolated Timeline admin backend foundation
+
+**Date:** 10 November 2026.
+
+**Feature/task:** Implement Phase 1 of the Timeline Admin backend: a separate Flask authentication foundation that does not change the Timeline frontend's local storage or Admin Preview.
+
+**Architectural review:**
+- The existing pilot is a React + Vite frontend. Milestones are stored by `timelineRepository.js` in IndexedDB; page configuration is stored by `timelinePageConfig.js` in localStorage. Admin Preview is a local UI switch, not authentication.
+- No existing backend/authentication integration point was present. The Flask service is kept within `react-pilot/backend/`, the database defaults to the user's application data directory outside the repository, and Vite proxies `/api` only for local development.
+- The current UI and both browser storage adapters were left unchanged. The new API does not implement milestone/image/page-configuration endpoints or integrate with another GRID team's backend, auth, database, navbar, page or shared stylesheet.
+
+**Changes made:**
+- Added a Flask application factory, environment configuration, SQLAlchemy extension, Timeline-local `Admin` and `AdminSession` models, Flask-Migrate setup and initial Alembic migration.
+- Added an interactive `flask create-admin` CLI command. It requires a username and hidden confirmed password, enforces a 12-character minimum, and stores Werkzeug scrypt hashes. No public registration endpoint exists.
+- Added CSRF bootstrap, login, logout and current-session endpoints plus an example admin-only endpoint. Admin authentication uses a random opaque cookie whose digest, admin link and expiry are stored server-side; logout revokes the database record. Authenticated writes require the server-side CSRF token. Both cookies are HttpOnly, SameSite=Lax, scoped to `/api`, and become Secure in production; request bodies and password lengths are bounded.
+- Limited login to five attempts per minute per client address and normalized username. Added the Vite development proxy and backend setup/security/test documentation.
+- Added automated backend tests for wrong and oversized passwords, 401 unauthenticated access, authenticated access, invalid CSRF, missing public registration, password hashing, logout revocation, login rate limiting, secure cookie flags and interactive admin creation.
+
+**Files changed:**
+- `react-pilot/backend/.gitignore`
+- `react-pilot/backend/README.md`
+- `react-pilot/backend/requirements.txt`
+- `react-pilot/backend/app/__init__.py`
+- `react-pilot/backend/app/__main__.py`
+- `react-pilot/backend/app/auth.py`
+- `react-pilot/backend/app/cli.py`
+- `react-pilot/backend/app/config.py`
+- `react-pilot/backend/app/extensions.py`
+- `react-pilot/backend/app/models.py`
+- `react-pilot/backend/migrations/README`
+- `react-pilot/backend/migrations/alembic.ini`
+- `react-pilot/backend/migrations/env.py`
+- `react-pilot/backend/migrations/script.py.mako`
+- `react-pilot/backend/migrations/versions/0001_timeline_admin_auth.py`
+- `react-pilot/backend/tests/test_auth.py`
+- `react-pilot/vite.config.js`
+- `react-pilot/README.md`
+- `AI_HANDOFF.md`
+
+**Verification performed:**
+- `python -m unittest discover -s tests -v` in `react-pilot/backend/`: PASS, 11/11 tests.
+- Applied the initial Alembic migration, ran `flask db check` with no drift, and checked the revision using a fresh temporary SQLite database under `/tmp`: PASS at `0001_timeline_admin_auth`.
+- `node --test src/*.test.js` in `react-pilot/`: PASS, 88/88 tests.
+- `npm run build` in `react-pilot/`: PASS; Vite 8.3.7 produced the production bundle.
+- No live deployment, browser-based end-to-end authentication, production database, shared rate-limit store, or production security review was performed.
+
+**Current limitations and next steps:**
+- The backend is a local foundation, not production-ready authentication. Set a unique `TIMELINE_SECRET_KEY`; use HTTPS and `TIMELINE_ENV=production` for secure cookies. The default limiter is in-memory and is suitable only for a single local process; configure shared rate-limit storage for multiple workers.
+- The frontend still has the demo Admin Preview switch, IndexedDB milestone persistence and localStorage page configuration. Phase 1 deliberately did not connect or replace any of them.
+- Review this isolated API foundation. Before connecting the UI, define Timeline-only milestone, photo and page-configuration API contracts, storage and authorization policy, then add integration and end-to-end security tests.
+- No commit or push was made. The five untracked SESSION README files were preserved.
+
+**Run/test instructions:**
+- Backend setup, environment variables, migration, admin provisioning and API run instructions: `react-pilot/backend/README.md`.
+- From `react-pilot/backend/` with its virtual environment active: `python -m unittest discover -s tests -v`.
+- From `react-pilot/`: `node --test src/*.test.js` and `npm run build`.
+- Start the Flask API with `python -m app` from `react-pilot/backend/`; start Vite with `npm run dev` from `react-pilot/`.
+
+---
+
+## Session 037 — read-only Timeline admin backend security audit
+
+**Date:** 10 November 2026.
+
+**Feature/task:** Read-only security review of the isolated Timeline admin backend. No security fixes or source changes were made in this session.
+
+**Audit summary:**
+- No Critical findings were identified.
+- **High — production configuration:** `SESSION_COOKIE_SECURE` is false unless `TIMELINE_ENV=production`, while the development Vite server binds to all interfaces and proxies API traffic. Require secure cookies and HTTPS in production, configure a production WSGI server, and keep real admin use off the LAN HTTP development proxy.
+- **High — authorization for future write routes:** the blueprint write hook checks CSRF and session-row existence but not admin active state or session expiry. Current protected routes use `admin_required`, and no Timeline content CRUD routes exist yet. Before adding content endpoints, enforce active/unexpired admin authorization centrally as well as per route, then test every write route for unauthenticated and stale-session access.
+- **Medium — login throttling:** the rate-limit key is per remote address and username, and the default storage is process-local memory. Add combined per-IP and per-account limits and shared storage for multiple workers.
+- **Medium — session revocation:** password changes do not currently have an endpoint or session-version invalidation; deactivation checks occur when protected endpoints are visited but do not proactively revoke all sessions. Revoke an admin's sessions on password change/deactivation and test deactivation/reactivation and stale-session cases.
+- **Medium — SQLite file permissions:** the default DB is outside the repository, but the app does not enforce owner-only directory/file permissions. Restrict the data directory and database file and ensure configured paths do not point into the source checkout.
+- **Medium — account enumeration by timing:** unknown usernames skip scrypt verification while known usernames incur its cost. Verify a fixed dummy hash for unknown users and retain generic error responses.
+- **Low — GET side effect:** `/api/auth/session` and the protected ping path can delete stale sessions during GET requests. Keep GET handlers read-only and move cleanup elsewhere.
+- **Low — CLI/login password bound mismatch:** the admin CLI has a minimum password length but no upper limit, while login rejects passwords longer than 1024 characters. Apply the same maximum at provisioning.
+
+**Authorization and API scope:**
+- The route map contains auth/bootstrap/session routes, logout and the protected ping endpoint only. There are no milestone, photo or page-configuration CRUD routes; therefore current content IDOR and public content-write behavior could not be evaluated because those operations do not exist.
+- Current admin routes perform server-side checks. The review identified the central write hook's missing active/expiry checks as a blocker before future write endpoints are added.
+- CORS is not enabled. CSRF uses Flask-WTF token validation for login and a session-bound token for authenticated writes; explicit Origin/Referer checking is absent as defense in depth.
+- Passwords use scrypt, tokens are generated with `secrets.token_urlsafe(32)` and stored as SHA-256 digests, and responses do not expose password hashes or raw auth tokens. The initial migration models and migration definitions appeared aligned by inspection.
+
+**Files changed:**
+- `AI_HANDOFF.md` only. The audit itself made no backend or other source changes. Existing unstaged implementation changes and untracked SESSION README files were preserved.
+
+**Verification performed:**
+- Backend security tests: PASS, 11/11. Confirmed the suite uses `sqlite://` in-memory SQLite and `memory://` rate-limit storage; ran with `PYTHONDONTWRITEBYTECODE=1` to avoid creating Python bytecode files.
+- Inspected the route map without applying migrations or touching the persistent database.
+- No frontend tests, build, migration command, deployment test or manual browser test was run for this read-only audit.
+- Handoff validation reported that `AI_HANDOFF.md` must be staged; it was left unstaged as instructed. `git diff --check` passed. No staging, commit or push was performed.
+
+**Production blockers:**
+- Enforce secure-cookie/HTTPS deployment configuration and use a production WSGI server.
+- Before implementing content writes, add central active/unexpired authorization in addition to CSRF and verify every write route.
+- Use shared rate-limit storage and combined IP/account limits for multi-worker production.
+- Revoke sessions on account deactivation and password changes.
+
+**Optional hardening:**
+- Restrict SQLite directory/database permissions; equalize login timing; keep GET handlers free of cleanup mutations; align the CLI password maximum with login; add explicit Origin checks and broader security regression tests.
+
+**Next step:**
+- Address the security findings before building Timeline content-editing endpoints. Add tests for unauthorized writes, expired and deactivated sessions, reactivation/password-change revocation, invalid login CSRF, GET side effects and production cookie configuration.
+
+**Run/test instructions:**
+- From `react-pilot/backend/` with the backend virtual environment active: `python -m unittest discover -s tests -v`.
+- The tests use in-memory SQLite. For the Vite pilot, run `node --test src/*.test.js` and `npm run build` from `react-pilot/`.
+
+---
+
+## Session 038 — Timeline backend security hardening, Phase 1.1
+
+**Date:** 10 November 2026.
+
+**Status:** The plan was recorded as PLANNED before implementation; Phase 1.1 is now completed locally.
+
+**Task:** Address the backend security findings recorded in Session 037 before any Timeline content-editing endpoints are added.
+
+**Plan:**
+- Fail closed in production unless both session cookies are Secure and the rate limiter uses shared Redis storage; retain the local in-memory limiter default. Document the production environment variables and infrastructure requirements without adding credentials or changing hosting.
+- Centralize validation of admin session existence, expiry, active account and revocation version. Keep CSRF checks independent, and provide a reusable server-side guard for future `/api/admin/` routes without adding content CRUD.
+- Add Timeline-local account security helpers to revoke all sessions on deactivation and password change, with a monotonic session version so reactivation cannot restore old sessions.
+- Apply independent per-IP and per-normalized-account login limits, perform a dummy scrypt verification for unknown usernames, keep GET session checks read-only, align CLI and login password maximums, and give newly created SQLite directories/files owner-only permissions without chmodding existing data.
+- Extend isolated backend tests for all requested lifecycle, CSRF, rate-limit, unknown-user, configuration, permissions and protected-route cases; inspect migration needs and use only temporary or in-memory databases for verification.
+
+**Changes made:**
+- Production startup now rejects insecure session-cookie configuration and non-Redis rate-limit storage. Local development still defaults to `memory://`. Added the Redis client dependency and documented production environment, HTTPS/proxy/WSGI expectations, and the requirement to verify Redis persistence in deployment.
+- Added central server-side protection for every recognized `/api/admin/` route plus reusable `admin_required`. Both check the stored session, expiry, active-admin state and session version. CSRF remains a separate app-level write-request check, including future Timeline admin writes. No content CRUD endpoint was added.
+- Added `app/accounts.py` helpers to revoke all an admin's sessions, deactivate/reactivate accounts and change passwords. These operations increment the admin's session version and remove stored sessions, preventing old cookies from returning after reactivation or a password change. Callers must commit account changes and revocation in one transaction.
+- Added independent five-per-minute account/IP and twenty-per-minute IP login limits; added a fixed dummy scrypt verification for unknown usernames; removed database cleanup mutations from GET session/auth guards; aligned CLI and login password limits at 12–1024 characters.
+- SQLite database paths inside the repository are rejected. Newly created SQLite directories/files get owner-only permissions (POSIX `0700`/`0600`; Windows ACLs restricted to the current account). Existing directory/file permissions are left unchanged. Added migration `0002_admin_session_revocation` with session-version fields.
+- Expanded backend tests for session lifecycle and revocation, CSRF, read-only GETs, unknown usernames, password limits, production settings, multi-username IP throttling, future admin-route authorization, repository-path rejection and SQLite permissions.
+
+**Files changed in this session:**
+- `react-pilot/backend/app/__init__.py`
+- `react-pilot/backend/app/accounts.py` (new)
+- `react-pilot/backend/app/auth.py`
+- `react-pilot/backend/app/cli.py`
+- `react-pilot/backend/app/config.py`
+- `react-pilot/backend/app/models.py`
+- `react-pilot/backend/migrations/versions/0002_admin_session_revocation.py` (new)
+- `react-pilot/backend/requirements.txt`
+- `react-pilot/backend/tests/test_auth.py`
+- `react-pilot/backend/README.md`
+- `AI_HANDOFF.md`
+
+**Verification performed:**
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest discover -s tests -v` from `react-pilot/backend/`: PASS, 26/26. The main suite uses `sqlite://` and `memory://`; filesystem tests use temporary SQLite paths and confirm new permissions, existing-mode preservation and repository-path rejection. No persistent local database was used.
+- `node --test src/*.test.js` from `react-pilot/`: PASS, 88/88 across all source test files.
+- Applied migrations 0001 and 0002 to a temporary SQLite database; `flask db check` reported `No new upgrade operations detected`. The temporary database was mode `0600` and was removed with its temporary directory.
+- An initial test iteration had five failures: test-only CSRF token reuse after login, late route registration, and a file-mode hook registered outside app context. Corrected the test request cache/route setup and registered the SQLite permission hook in app context; the final runs above passed. A test cleanup warning was also corrected before the final backend run.
+- Production configuration validation rejected insecure-cookie/memory settings and accepted the Redis URI scheme, but no real Redis client/service or deployed production environment was exercised. POSIX file modes were tested on this host; the Windows ACL path was not run here. The production build was not run because this phase changed only backend code/docs and the handoff.
+- `git diff --check`: PASS. `git diff --cached --check`: PASS (no staged changes). `node scripts/check-ai-handoff.mjs`: exited 1 with its expected prerequisite message that `AI_HANDOFF.md` must be staged. It was deliberately left unstaged to preserve the no-staging instruction.
+- No source tests beyond the 88/88 Node suite or production build are claimed for this backend-only phase.
+
+**Current functionality and scope:** The backend still exposes authentication/session endpoints and the protected ping endpoint only. The React Admin Preview and IndexedDB/localStorage remain unchanged and disconnected. There are no milestone, photo or page-configuration CRUD endpoints, public registration, other-site auth or shared-system changes. Existing staged/unstaged work and all SESSION README files were preserved. Nothing was staged, committed or pushed.
+
+**Remaining risks / blockers:** Production must provide Secure cookies over HTTPS and a shared Redis URL; the app validates Redis scheme but cannot verify the remote Redis persistence policy, availability, credentials or proxy topology. Expired session rows are no longer removed by GET requests; a separate maintenance cleanup strategy may be needed. No production deployment or browser/admin end-to-end security review was performed. Explicit Origin/Referer checks remain optional defense in depth. Team approval and the approved Timeline API/auth integration remain pending.
+
+**Next:** Phase 2 is planned: add a Timeline-only persistent milestone API with public published reads and server-authorized CRUD/reordering, using the existing milestone fields and image-reference limits documented below. Keep the React Admin Preview and IndexedDB/localStorage adapters unchanged until Phase 3 integration. Do not add event/history content or public registration.
+
+**Run/test instructions:**
+- Backend setup and production requirements: `react-pilot/backend/README.md`.
+- Backend tests: from `react-pilot/backend/`, run `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest discover -s tests -v` (or activate `.venv` and use the documented unittest command). Tests do not use the developer database.
+- Timeline source tests: from `react-pilot/`, run `node --test src/*.test.js`.
+- Production build remains `npm run build` from `react-pilot/`; it was not run for this backend-only session.
+
+---
+
+## Session 039 — Timeline milestone API, Phase 2
+
+**Date:** 10 November 2026.
+
+**Status:** The plan was recorded as PLANNED before implementation. Phase 2 is now implemented and verified locally.
+
+**Scope:** Timeline-only backend content API in `react-pilot/backend/`, related isolated backend tests/documentation and this handoff. The React frontend, Admin Preview, browser IndexedDB/localStorage adapters, shared styles and other website sections remain out of scope.
+
+**Plan:**
+- Add a persistent SQLAlchemy milestone model and Alembic migration compatible with the current frontend fields: `id`, `title`, `category`, `date`, optional `time` and `location`, `summary`, `description`, `images`, `isDemo`, and timestamps. Add publication state and stable ordering for API access and reorder operations; do not seed invented events or migrate browser data.
+- Add public published-milestone reads and authenticated admin list/create/update/delete/reorder routes. Use the existing central `/api/admin/` authorization and CSRF guards; validate all JSON server-side, return only public milestone fields, and make reorders transactional and all-or-nothing.
+- Keep image handling reference-only: no upload route, arbitrary filesystem paths, or IndexedDB Blob migration. Validate supported reference forms and document the separate secure upload requirement.
+- Extend backend tests with in-memory/temporary databases for public access, auth/CSRF, CRUD, validation, IDs, publication filtering, reorder atomicity/determinism and GET read-only behavior.
+- Document the API contract and update this session with exact changed files and actual verification. Run all backend and Timeline source tests, migration upgrade/schema-drift checks against a temporary database, whitespace checks and handoff validation when possible. Phase 3 real admin dashboard integration remains next.
+
+**Implementation completed:**
+- Added `TimelineMilestone` with UUID string IDs, the current editor's supported content fields and limits, JSON photo references, `is_demo`, draft-by-default `is_published`, zero-based `sort_order`, and UTC creation/update timestamps. Added category and nonnegative-order database constraints and a public ordering index. No milestone rows or demo events are seeded.
+- Added migration `0003_timeline_milestones`, dependent on Session 038's `0002_admin_session_revocation`. It creates only the Timeline milestone table and index; no browser data is imported.
+- Added the milestone API blueprint. Public reads return published entries only. Admin routes list drafts and published items, create drafts with server-generated UUIDs, partially update content/publication, delete by ID and reorder the complete set. Existing central namespace checks plus `@admin_required` validate the active admin, unexpired session and session version; the independent application CSRF hook protects every write.
+- Server validation checks allowed fields, category/date/time formats, content length and types, at most eight image references, safe HTTPS or same-origin paths, supported image MIME/extensions, no traversal or embedded URL credentials, and rejects binary/blob fields and unknown JSON fields. Requests remain size-bounded at 32 KiB. Responses expose Timeline content, status/order and timestamps only.
+- Reorder validates a unique, complete, existing UUID list before changing any row, then commits all new positions together. Sorting is deterministic using order, date, time and ID. GET handlers do not mutate data.
+- Documented the full endpoint/field/status contract and the current photo reference limitation. The React frontend, Admin Preview, IndexedDB/localStorage, root `style.css` and other sections were not modified.
+
+**Files changed for Phase 2:**
+- `react-pilot/backend/app/__init__.py`
+- `react-pilot/backend/app/config.py`
+- `react-pilot/backend/app/milestones.py` (new)
+- `react-pilot/backend/app/models.py`
+- `react-pilot/backend/migrations/versions/0003_timeline_milestones.py` (new)
+- `react-pilot/backend/tests/test_milestones.py` (new)
+- `react-pilot/backend/README.md`
+- `AI_HANDOFF.md`
+
+**API contract:**
+- `GET /api/timeline/milestones` — public JSON `{ "milestones": [...] }`, published only.
+- `GET /api/admin/timeline/milestones` — authenticated admin JSON list including drafts.
+- `POST /api/admin/timeline/milestones` — authenticated + CSRF; required `title`, `category`, `date`, `summary`, `description`; optional `time`, `location`, `images`, `isDemo`, `isPublished`; creates draft by default, server assigns UUID/order, returns 201 and `{ "milestone": ... }`.
+- `PATCH /api/admin/timeline/milestones/<id>` — authenticated + CSRF; nonempty partial patch of allowed content and publication fields, returns updated milestone.
+- `DELETE /api/admin/timeline/milestones/<id>` — authenticated + CSRF; removes one item, returns `{ "deleted": true }`.
+- `POST /api/admin/timeline/milestones/reorder` — authenticated + CSRF; requires `{ "ids": [...] }` containing every existing milestone exactly once (including drafts); returns canonical IDs. Invalid sets return 400 before any changes.
+- Errors: 400 for invalid fields/reorder or CSRF, 401 for missing/expired/inactive/revoked admin sessions, 404 for invalid/nonexistent item IDs, and 409 for a database uniqueness conflict. Public write attempts are rejected with 401. No per-item GET, public registration, upload or page-configuration route was added.
+- Photo references use `{ "url": "/same-origin/path.webp", "name": "photo.webp", "type": "image/webp" }`; HTTPS URLs are also accepted. Current browser `{blob,name,type}` values are not accepted or migrated. A secure upload/storage service and frontend adapter are separate work.
+
+**Verification performed and actual results:**
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest discover -s tests -v` from `react-pilot/backend/`: PASS, 38/38 tests. Both authentication regression tests and milestone API tests used isolated `sqlite://` databases and `memory://` rate-limit storage; filesystem-security tests use temporary directories/databases. No persistent developer database was used.
+- `node --test src/*.test.js` from `react-pilot/`: PASS, 88/88 tests across every source test file. No frontend source was changed.
+- Using a fresh temporary SQLite file, `flask db upgrade` applied migrations 0001, 0002 and 0003; `flask db current` reported `0003_timeline_milestones (head)`; `flask db check` reported `No new upgrade operations detected`. The temporary directory/database was removed afterward.
+- An initial backend run exposed one create-time default collision and one test expecting an unspecified single-item GET route. Both were corrected; the final complete backend suite passed 38/38.
+- The production Vite build was not run; this phase did not modify frontend code and the requested verification was backend/source tests and migration checks.
+- `git diff --check`: PASS. `git diff --cached --check`: PASS; no staged changes existed.
+- `node scripts/check-ai-handoff.mjs`: exited 1 with the repository hook's prerequisite message that `AI_HANDOFF.md` must be staged. It was intentionally not staged, so the pre-commit validator's staged-file condition cannot be satisfied under this task's Git rules. No files were staged to satisfy the validator, and all migration checks used a temporary database.
+
+**Remaining limitations and next phase:**
+- The React Admin Preview remains unchanged and disconnected from the API; no real dashboard login flow or cross-device content integration exists yet.
+- IndexedDB Blob photos need an approved secure upload/storage phase and a frontend adapter. API image references alone do not store or serve image files.
+- Page configuration remains localStorage. It is intentionally outside the milestone API.
+- No production deployment, Redis service, multi-worker persistence, browser end-to-end test or visual review was performed. Production cookie/Redis/HTTPS/WSGI requirements from Phase 1.1 remain.
+- Next is Phase 3: team review of the API and integration/authentication approach, then connect the Timeline-only dashboard after approval. Preserve local browser data until a migration plan is explicitly reviewed.
+
+---
+
+## Session 040 — read-only Phase 2 API review and worktree reconciliation
+
+**Date:** 10 November 2026.
+
+**Task:** Perform a read-only security/API compatibility review of the Phase 2 Timeline milestone API and investigate the reported Git status discrepancy. No application, frontend, test or backend documentation fixes were authorized or made.
+
+**Verified protections and behavior:**
+- Every current `/api/admin/timeline/milestones` route has `@admin_required`; the app also applies its central `/api/admin/` namespace gate. Both resolve the opaque session record and check expiry, active-admin status and session version. The write-request CSRF hook is separate and protects every defined state-changing API route.
+- Public `GET /api/timeline/milestones` filters on `is_published = true`. Public users have no content mutation route. Admin list and write routes use the real Flask request/auth stack in tests; no content authorization test replaces those checks with mocks.
+- Create, patch and delete validate allowed fields, types, category, calendar date, time and text bounds. Invalid IDs return 404. Reorder validates unique canonical UUIDs and the complete current ID set before updates, then commits all positions in one database transaction. Invalid reorder tests verify unchanged order.
+- Image references reject traversal, protocol-relative URLs, non-HTTPS schemes, embedded URL credentials and unsupported metadata. The backend does not fetch referenced URLs or access files. No confirmed authentication bypass, public draft disclosure, IDOR or direct filesystem disclosure was found in the reviewed routes.
+- Migration 0003 was applied in a fresh temporary SQLite database after 0001 and 0002; current revision was `0003_timeline_milestones (head)` and `flask db check` reported no schema drift. The developer database was not touched.
+- Backend tests passed 38/38 with in-memory SQLite and memory rate-limit storage; filesystem permission cases use temporary paths. No persistent database was used.
+
+**Findings — not fixes:**
+- **Medium — frontend/API ordering incompatibility:** API order uses `sortOrder` before date/time/ID, while `App.jsx` sorts by date/time and ignores `sortOrder`. An adapter alone will not make the API reorder behavior visible; Phase 3 must align the ordering contract and verify it end-to-end.
+- **Medium — frontend/API image and request-shape incompatibility:** the current UI stores and renders Blob photos (`{blob,name,type}`); the API expects `{url,name,type}` references, generates UUIDs, and rejects unknown fields including the UI's existing `id`, `createdAt` and `updatedAt`. The API is not connected, so this is not an active runtime break. Phase 3 needs an explicit adapter and a reviewed local-data preservation plan; uploads/storage remain separate work.
+- **Low / potential — image-source policy:** arbitrary HTTPS hosts and same-origin paths are accepted. The backend does not fetch these URLs, so SSRF was not found, but public clients could request an unapproved third party or a non-image route. The extension check prefers `name` over the URL path, allowing a safe-looking name to mask a different URL suffix. Consider an approved source allowlist and consistent extension/type validation before public integration. No direct filesystem exposure was demonstrated.
+- **Low / potential — concurrent ordering:** create computes `max(sort_order) + 1` without a uniqueness constraint or serialization, so concurrent creates may share an order. Tie-breakers keep response order deterministic but may not match insertion intent. No concurrent-writer tests or explicit multi-admin ordering policy exist.
+- **Publication policy pending:** a Timeline admin can set `isPublished` directly; there is no second-person approval permission/workflow. Confirm direct admin publishing matches team policy.
+
+**Test coverage and limitations:**
+- `test_milestones.py` exercises real route handlers for public draft filtering, public write rejection, admin CRUD, CSRF on every mutation, expired/inactive/revoked sessions, invalid IDs/fields/images, deterministic reorder, invalid reorder non-mutation and GET read-only behavior. `test_auth.py` covers authentication regressions, revocation and the app-wide admin namespace gate.
+- The suite does not cover concurrent create/reorder behavior, end-to-end rendering of API responses in React, image hosting/content-type behavior, or a populated-database upgrade. No production service or browser test was run.
+- `git diff --check`: PASS. `git diff --cached --check`: PASS; no staged changes exist. No production build was run for this read-only review.
+
+**Worktree reconciliation:**
+- Branch is `feature/timeline-admin`; no staged diff exists.
+- Modified tracked paths are `AI_HANDOFF.md`, `react-pilot/README.md`, and `react-pilot/vite.config.js`. README currently adds the backend guide; Vite currently adds the local `/api` proxy to `127.0.0.1:5000`. The handoff contains the already-existing Sessions 036–039 and current Section 9 changes. These worktree changes were not restored or overwritten during the review.
+- `SESSION025_README.md` through `SESSION029_README.md` all exist and appear as untracked, not tracked or ignored. The `react-pilot/backend/` tree also appears untracked in this clone.
+- This current checkout does not match the earlier final-status report that showed only Sessions 028–029 and omitted the README/Vite modifications. The historical cause cannot be determined from current evidence. No file was deleted, staged or overwritten to reconcile the reports.
+
+**Files changed in Session 040:**
+- `AI_HANDOFF.md` only. No source code, frontend, tests, backend README, Vite config, session README or shared stylesheet was changed.
+
+**Next:** Resolve ordering, image-reference/request-shape, image-origin and publishing-policy decisions with the Timeline/main-site team before Phase 3 dashboard integration. Keep the API disconnected until the adapter, authentication UX, image storage and local-data migration plan are reviewed.
+
+---
+
+## Session 041 — Phase 3 Timeline Admin dashboard plan
+
+**Date:** 10 November 2026.
+
+**Status: PLANNED.** This plan is recorded before any Phase 3 source changes.
+
+**Scope:** Timeline-only React admin UI and its API client, relevant Timeline tests/docs, root `AI_HANDOFF.md`, and only a minimal Timeline auth response change if needed to support secure session restoration. Do not modify shared site pages/styles, root `style.css`, other backend APIs/auth or unrelated files.
+
+**Planned work:**
+- Replace the local Admin Preview authentication illusion with a real login flow backed by `GET /api/auth/session`, `POST /api/auth/login`, and `POST /api/auth/logout`. Obtain pre-login CSRF from `GET /api/auth/csrf`; send CSRF headers for login and every mutation. Keep the HttpOnly server cookie as the only auth credential; never persist passwords/tokens in browser storage.
+- Build a responsive Timeline-only admin dashboard with counts, search/filter, draft/published state, create/edit/delete confirmation, publish/unpublish, manual reorder, and explicit loading/error/empty states. Render controls only after the backend confirms an authenticated session; server-side authorization remains authoritative.
+- Follow Session 039's actual JSON contract. Omit client IDs/timestamps on create and use the server-returned UUID/timestamps. Send only editable fields on patch. Use the reorder endpoint's complete ordered ID list and handle 401 by clearing authenticated UI state.
+- Make API-managed Timeline rendering respect `sortOrder`; retain chronological date/time sorting for legacy browser records that have no server ordering field.
+- Preserve all existing IndexedDB/localStorage records and Blob objects. Do not auto-import, overwrite, delete or fake URLs. Keep public rendering on the existing local source until a reviewed, explicit cutover can guarantee published server content is ready. Public API reads remain published-only; drafts are only shown in authenticated admin UI.
+- Treat image uploads as pending. The admin may preserve existing local Blob photos and display API reference photos where supported, but no upload route or local Blob conversion will be introduced. Document shared image storage as separate work.
+- Add tests for auth/session lifecycle, guarded dashboard states, API CRUD/publication/reorder behavior, 401 handling, preservation of local fallback data and Blob references, and responsive dashboard styling. Run isolated backend tests, all Timeline source tests, Vite build and `git diff --check`; update this plan with actual results and limitations.
+
+**Status: IMPLEMENTED LOCALLY; public cutover and visual acceptance remain pending.**
+
+**Actual implementation and API integration:**
+- Added the Timeline admin panel with login, session restoration on mount, logout, admin milestone list, total/published/draft counts, search and publication filters, create/edit forms, delete confirmation, publish/unpublish, and earlier/later reorder controls. Loading, empty, API error and expired-session states are included.
+- Login first gets a Flask-WTF CSRF token from `/api/auth/csrf`; all writes use `X-CSRFToken`. The auth cookie remains HttpOnly and browser-managed. No password or auth cookie/session credential is placed in localStorage. Session refresh uses the existing `/api/auth/session` endpoint.
+- **Small backend contract addition required for refresh:** an authenticated `/api/auth/session` response now includes its session-bound CSRF token, needed so a restored session can submit mutations/logout after refresh. The token is only returned after valid server-side session authorization; unauthenticated responses do not contain it. Added auth regression tests for this behavior.
+- Added a frontend API adapter for the established `/api/auth/*` and `/api/admin/timeline/milestones*` endpoints. It validates response shape for list/create, sends only editable milestone fields, and consumes the server's canonical ID and timestamps. Server auth/CSRF checks remain authoritative. On HTTP 401, authenticated client state and admin content are cleared.
+- API-managed milestones sort by `sortOrder`; records without server ordering use chronological date/time fallback. The public Timeline still uses its current IndexedDB source and does not read API drafts or swap to an empty backend. No migration, import, overwrite or delete of browser data occurred.
+- Existing Blob photos were not touched and are not converted to URLs or sent to the backend. The form supports only URL image references accepted by the current API; image upload and shared storage remain pending. Page configuration remains localStorage-backed and is explicitly labeled browser-local inside the authenticated area.
+- Updated the existing Admin Preview structural regression to cover the component-based authenticated section and its placement after the public content. Added API client tests for session/CSRF handling, API paths and write headers, no server-owned fields, Blob filtering, 401 behavior and sort fallback.
+
+**Files modified for Session 041:**
+- `react-pilot/src/App.jsx`
+- `react-pilot/src/TimelineAdmin.jsx` (new)
+- `react-pilot/src/timelineAdminApi.js` (new)
+- `react-pilot/src/timelineAdminApi.test.js` (new)
+- `react-pilot/src/timelineAdminDesign.test.js` (new)
+- `react-pilot/src/timelinePageBuilderDesign.test.js`
+- `react-pilot/src/timeline.css`
+- `react-pilot/backend/app/auth.py`
+- `react-pilot/backend/tests/test_auth.py`
+- `AI_HANDOFF.md`
+
+Earlier worktree modifications to `react-pilot/README.md` and `react-pilot/vite.config.js`, plus untracked `SESSION025_README.md` through `SESSION029_README.md` and the pre-existing untracked backend tree, were preserved. None were staged.
+
+**Verification actually run:**
+- `node --test src/*.test.js` from `react-pilot/`: **98 passed, 0 failed**.
+- `python3 -m unittest discover -s tests -v` from `react-pilot/backend/`: **40 passed**. Backend test fixtures use in-memory SQLite and memory rate-limit storage; no persistent local database was used.
+- `npm run build` from `react-pilot/`: **passed** with Vite 8.3.7.
+- `git diff --check`: **passed**.
+- The first frontend run had 93 passing and one structural assertion still expecting Admin Preview markup inline in `App.jsx`; updated that assertion to verify the new component boundary/auth-gated placement, then reran the full suite successfully. An initial backend command using unavailable `python` did not run; the complete suite was rerun with `python3` and passed.
+- `node scripts/check-ai-handoff.mjs` was run without staging and exited 1 because its required pre-commit condition is that `AI_HANDOFF.md` be staged. No staging is authorized. No migration check or browser/device visual review was run in this phase.
+
+**Remaining limitations / next:**
+- Admin dashboard CRUD works against the API client contract in tests/build, but no browser-based end-to-end session or mobile/desktop visual test was run.
+- Public visitors continue to see the existing browser-side Timeline dataset, including its prior demo behavior; there has been no API content cutover. Published API data is not yet rendered publicly, while drafts are not fetched by the public UI.
+- Browser Blob photos are preserved locally and cannot yet be attached to server milestones. Implement approved, secure shared image storage separately.
+- The page-builder configuration still saves to localStorage; a shared configuration API is not part of this phase.
+- Continue with production deployment/session checks, visual acceptance, team-approved public content cutover, and image-storage decisions before release.
+
+---
+
+## Session 042 — initialize local Timeline development database
+
+**Date:** 10 November 2026.
+
+**Task:** Prepare the local Timeline-only SQLite database for Phase 3 development testing by checking its configured path and current revision, preserving data before migration where present, applying only the checked-in Alembic head, and verifying the resulting schema and records.
+
+**Inspection and result:**
+- Confirmed the current branch is `feature/timeline-admin`. Existing tracked/untracked work was inspected and preserved; no files were staged, committed or pushed.
+- Resolved the backend's effective default database path from `app.config.Config` as `/Users/vineela/.local/share/grid-timeline/timeline-admin.sqlite3`. The configuration uses a SQLite file in the user's data directory, outside the repository. No database URL, credentials or secret values were printed.
+- The database file and its parent directory were absent before migration. Therefore there was no prior Alembic revision, no admin account or session, and no milestone records at this configured path. A backup was not applicable because no database existed.
+- Confirmed the checked-in migration graph has one head: `0003_timeline_milestones`. Applied the migrations through that exact target. The resulting `flask db current` output was `0003_timeline_milestones (head)`; `flask db check` reported `No new upgrade operations detected.`
+- Verified SQLite integrity (`integrity_check=ok`) and required columns for the admin, session and milestone tables. Final row counts are 0 admins, 0 sessions and 0 milestones. There were no pre-existing database records to compare or preserve. No account was provisioned.
+- `TIMELINE_SECRET_KEY` was not configured in this shell. A fresh transient process-only key was used to start the Flask CLI for migration; it was not printed or persisted. Set a stable local secret before starting the API or logging in, then use the documented `create-admin` CLI to provision a local account.
+- The first migration attempt was blocked by the sandbox when the app tried to create the external user-data directory. After requesting and receiving the required filesystem approval, the guarded operation rechecked the path, confirmed absence, applied the migration and verified the database.
+- No browser IndexedDB/localStorage content or photos were read or changed. No source, CSS, test, README, session README, shared website or other application file was modified for this task.
+
+**Files changed:**
+- `AI_HANDOFF.md` only. The SQLite database is runtime data outside the repository, not a tracked project source file.
+
+**Verification actually performed:**
+- Alembic heads: one head, `0003_timeline_milestones`.
+- Migration upgrade to `0003_timeline_milestones`: completed.
+- Alembic current revision: `0003_timeline_milestones (head)`.
+- Alembic schema check: `No new upgrade operations detected.`
+- SQLite integrity and required schema columns: passed.
+- Final admin/session/milestone counts: 0 / 0 / 0; no pre-migration rows existed.
+- No application test suite, frontend build or handoff validator was run for this database-only preparation.
+- Next verification for local dashboard use: set a persistent development secret, create a local admin through the CLI, start the backend and Vite proxy, and exercise login and CRUD against this isolated Timeline database.
+
+---
+
+## Session 043 — Phase 3.1 editor, photo storage and public Timeline plan
+
+**Date:** 10 November 2026.
+
+**Status: PLANNED.** This plan is recorded before Phase 3.1 implementation.
+
+**Scope:** Timeline React components/styles/tests and the isolated Timeline Flask backend/migrations/docs only. Preserve all pre-existing work, root `style.css`, other sections, browser local data, and every SESSION README. Do not stage, commit or push.
+
+**Inspection and decisions before implementation:**
+- The authenticated dashboard in `react-pilot/src/TimelineAdmin.jsx` currently uses a simplified inline `MilestoneForm`. The original full `MilestoneEditor` remains in `react-pilot/src/App.jsx`, and the original modal/layout styles remain in Timeline-scoped `timeline.css`.
+- Read-only comparison with local `main` and `feature/Timeline` confirms those reference branches contain the original Timeline implementation/editor; the Phase 3 dashboard changes on `feature/timeline-admin` replaced its rendered editor but did not remove the original component or styles.
+- The isolated backend is at migration head `0003_timeline_milestones`; milestone `images` are URL-reference JSON, with no upload model/route. Local browser milestones use IndexedDB and photo Blobs. The public React Timeline still loads that local repository; no public API connection/import should hide local records.
+- A Chrome profile contains an IndexedDB directory, but the sandbox denied read-only listing of that external profile. The local IndexedDB record/photo count and actual LevelDB contents therefore remain unverified. Do not assume empty. Preserve the current repository as a non-destructive fallback and do not perform a browser-data cutover or import until the stored records can be reviewed.
+
+**Plan:**
+- Reuse/extract the original modal editor and connect its save handler to authenticated API calls. Preserve its field arrangement, counters, multi-file selection, previews, per-photo removal, fixed action area, scrollable body and mobile layout. Keep existing image references on edit.
+- Add private Timeline image storage outside the repository with random server-generated names, authenticated + CSRF-protected uploads, Pillow-based format verification, per-file/total size constraints, and pixel/dimension limits. Store no Blob or base64 in milestone JSON. Serve managed images only to a valid admin or when referenced by a published milestone; retain unlinked files rather than deleting user content automatically.
+- Add a migration for minimum image metadata and local-source idempotency references. Provide an explicit admin review/import flow that counts local records/photos, uploads Blob contents, uses server-canonical milestone IDs, preserves old browser data, and safely retries without duplicate milestone rows. If the browser store remains inaccessible, keep local content as a documented fallback and defer destructive cutover.
+- Connect public Timeline reads to `GET /api/timeline/milestones` while preserving existing local content. Render only published API milestones, use server IDs/timestamps/order, and support private/published image references. Do not auto-import, delete, or overwrite IndexedDB/localStorage data.
+- Extend isolated backend/frontend tests, apply migrations only to temporary DBs for test validation, run all backend tests, all Timeline source tests, production build and whitespace checks; update this session with actual outcomes and unresolved environment limitations.
+
+**Implementation status:** Phase 3.1 was partially implemented after this plan was recorded. No browser IndexedDB/localStorage records or photos were changed, and no public-data cutover was performed.
+
+**Completed implementation:**
+- Reused the original full `MilestoneEditor` by passing the component from `App.jsx` into the authenticated `TimelineAdmin`. This restores the original field layout, date/time/location, title/category, summary/full description and counters, multi-photo selection, previews/removal, retention of existing image references, fixed action footer, scrollable modal body and responsive styles. New Blob photos are uploaded before saving milestone JSON; the JSON contains only URL references and server-owned ID/timestamp values are not submitted.
+- Added a Timeline-private image metadata model and migration `0004_timeline_private_images`. Authenticated `POST /api/admin/timeline/images` requires CSRF, reads a single file, verifies decoded JPEG/PNG/WebP/GIF/AVIF data with Pillow, applies 10 MiB per-file, 8,000-pixel per-side and 32-million-pixel caps, and stores content under random filenames outside the repository with private directory/file modes. Milestones enforce eight references and a 40 MiB combined managed-photo cap. Public `GET /api/timeline/images/<uuid>` returns an image only for an authenticated admin or a published milestone reference; draft/unlinked references return 404 to public callers. Unpublish/delete retain image files to avoid destructive cleanup.
+- Added an authenticated, explicit review/import panel. It reads the existing IndexedDB database with a readonly transaction and reports milestone/photo counts; selected records are submitted using a stable source ID. Blob photos travel as separate multipart files, imports are forced to drafts, the server creates canonical IDs/timestamps, and unique source IDs make retries idempotent. The importer never removes or changes the browser source records. The actual browser profile data was inaccessible, so no import was executed.
+- Updated backend setup/API documentation to describe the upload/import contract and production storage requirements. Local filesystem image storage is development-only; production still requires durable shared storage accessible to all workers, with deployment-specific backup and retention. No provider, hosting or credentials were configured.
+
+**Not completed / remaining blockers:**
+- The public React Timeline is still loaded from the current IndexedDB repository; it does not yet fetch or render `/api/timeline/milestones`. Published backend milestones and managed images therefore do not yet appear to public visitors. The old source remains active as a preservation fallback because the actual browser records could not be inspected; no data was silently hidden. Complete an approved merge/cutover with duplicate handling after reviewing the local records.
+- Existing IndexedDB record/photo counts are available through the admin's explicit review control in a browser, but were not observed in this environment. The importer has API-level idempotency tests, but no browser-based import was performed.
+- Production shared storage, deployment and browser/physical-phone visual/upload testing remain pending. Do not treat local disk storage as production-ready.
+
+**Files changed in this phase:**
+- `react-pilot/backend/README.md`
+- `react-pilot/backend/requirements.txt`
+- `react-pilot/backend/app/__init__.py`
+- `react-pilot/backend/app/config.py`
+- `react-pilot/backend/app/images.py`
+- `react-pilot/backend/app/milestones.py`
+- `react-pilot/backend/app/models.py`
+- `react-pilot/backend/migrations/versions/0004_timeline_private_images.py`
+- `react-pilot/backend/tests/test_milestones.py`
+- `react-pilot/src/App.jsx`
+- `react-pilot/src/TimelineAdmin.jsx`
+- `react-pilot/src/timelineAdminApi.js`
+- `react-pilot/src/timelineAdminApi.test.js`
+- `react-pilot/src/timelineAdminDesign.test.js`
+- `react-pilot/src/timeline.css`
+- `react-pilot/src/timelinePageBuilderDesign.test.js`
+- `react-pilot/src/timelineRepository.js`
+- `AI_HANDOFF.md`
+
+**Verification actually performed:**
+- `node --test src/*.test.js`: **101 passed, 0 failed**.
+- `./.venv/bin/python3 -m unittest discover -s tests -v`: **46 passed, 0 failed**. Test apps use in-memory SQLite/rate-limit state and temporary image directories; the persistent developer database was not used.
+- `npm run build`: **passed** with Vite 8.3.7.
+- Temporary SQLite migration check: upgrades 0001 through `0004_timeline_private_images`; Alembic `db check` reported `No new upgrade operations detected`; verified `timeline_images` and `timeline_milestones.source_id` exist. The developer database was not migrated.
+- `git diff --check` and `git diff --cached --check`: **passed**.
+- `node scripts/check-ai-handoff.mjs`: **not passed** because the validator requires `AI_HANDOFF.md` to be staged. Staging is prohibited in this task; the exact validator message requests staging before commit. No files were staged.
+- Root `style.css` is unchanged. No SESSION README was modified. Nothing was staged, committed or pushed.
+
+---
+
+## Session 044 — Phase 3.2 modal, public data integration and responsive QA plan
+
+**Date:** 10 November 2026.
+
+**Status: PLANNED.** This plan is recorded after repository inspection and before Phase 3.2 source changes.
+
+**Branch/worktree:** `feature/timeline-admin`. Existing staged and unstaged state was inspected. There are no staged changes. Existing modifications to `AI_HANDOFF.md`, `react-pilot/README.md`, `react-pilot/src/App.jsx`, `react-pilot/src/timeline.css`, `react-pilot/src/timelinePageBuilderDesign.test.js`, `react-pilot/src/timelineRepository.js` and `react-pilot/vite.config.js`, plus untracked backend/admin source and tests and `SESSION025_README.md`–`SESSION029_README.md`, are preserved. Do not stage/commit/push or alter the session README files.
+
+**Reference comparison:** Local `main` and `feature/Timeline` are at the original published Timeline implementation. `git show feature/Timeline:react-pilot/src/App.jsx` confirms the original full MilestoneEditor and the historic modal markup/classes. Current Phase 3.1 reuses that editor but mounts it inside the authenticated dashboard. The modal CSS is scoped beneath `.timeline-shell` and mixes fixed positioning with constrained/scrollable modal layout; inspect all computed ancestor containing-block properties before changing it. Root `style.css` remains out of scope.
+
+**Planned work:**
+- Trace the editor's rendered DOM/ancestor CSS to identify the clipping/positioning cause. If the dashboard's glass/overflow/containing-block ancestry is responsible, render the editor with `ReactDOM.createPortal` to a body-level wrapper that preserves `.timeline-shell` selector scope. Keep the header accessible, center and viewport-bound the desktop dialog, allow only its body to scroll, pin its actions, disable background scrolling, and preserve Escape/focus restoration. Verify mobile safe areas, keyboard/visual viewport behavior and horizontal overflow.
+- Connect public loading to `GET /api/timeline/milestones`, displaying only published API items and canonical server IDs/timestamps/sortOrder. Preserve the old local IndexedDB records and Blob photos by merging local legacy records with server records without writes/deletes. Keep API-unavailable fallback. Use stable import source IDs for duplicate suppression where the public contract permits; do not silently hide legacy-only records or assume the browser store is empty.
+- Keep authenticated dashboard mutations server-authoritative. After successful create/edit/publish/unpublish/delete/reorder, refresh server admin/public lists and counts; on failures retain editor state and do not optimistically claim publication/deletion. Clarify draft versus published state.
+- Preserve Blob and managed URL image rendering in cards and detail galleries. Keep private upload authorization, CSRF and published-only public image serving unchanged.
+- Add focused regression tests for portal, data merge/fallback, publication visibility, reorder, server/local photos and state consistency. Run every source test, all backend tests, build and temporary migration/schema checks. Check supported viewport layouts in available browser automation; if no browser is available, record the limitation and provide exact manual viewport checks.
+
+**Implementation status:** Phase 3.2 is implemented locally; visual browser QA and review of actual profile data remain pending.
+
+**Findings and implementation:**
+- DOM review found `TimelineAdmin` renders the original editor inside `.timeline-admin-preview > .timeline-admin-panel.liquid-glass`. `.timeline-shell .liquid-glass` applies `backdrop-filter`; this establishes a containing block for fixed descendants. Consequently the editor's fixed backdrop was positioned against the dashboard glass panel rather than the browser viewport, explaining the clipped/off-center overlay. CSS source inspection confirmed the declared layout; a browser-computed-style capture was unavailable because no browser executable/automation dependency is installed.
+- `MilestoneEditor` now portals the original editor to a body-level wrapper, with `.timeline-shell` retained for scoped styles and its wrapper isolation/positioning reset. Desktop modal is centered, width-limited to 860px, viewport-height bounded, with a fixed heading/actions and independently scrolling form body. The body scroll lock, focus trap/restoration and Escape behavior remain. `visualViewport` height and offset update the overlay when mobile browser chrome or keyboard changes the visible viewport; the original mobile full-screen form layout is retained.
+- The public app calls `GET /api/timeline/milestones`; the client rejects malformed responses or any draft in that public list. App state merges published server records with IndexedDB legacy rows without writes/deletes. API `sourceId` is returned only for imported rows and is used to display the canonical server milestone instead of a matching local duplicate. Legacy-only rows and Blob photos remain visible. API success with real records does not seed local demos; API failure falls back to existing IndexedDB data, seeding only through the prior fallback path if local storage is empty.
+- Existing `StoredPhoto` renders IndexedDB Blobs using object URLs and backend image references from their URLs. After successful admin create/edit/publish/unpublish/delete/reorder/import, the admin collection refreshes and the public list refreshes. Delete waits for server confirmation; failed saves keep the editor and entered form state. New entries explicitly show that drafts are private until published.
+- The public API continues to enforce published-only milestones and the backend image endpoint serves managed files publicly only when linked to a published row. No private storage directory is exposed. The original IndexedDB profile remains uninspected and untouched; local-only records are compatibility content until the administrator reviews/imports them.
+
+**Responsive test availability and manual checklist:**
+- No Playwright/Puppeteer/Cypress executable or browser binary is installed. No actual screenshot/computed-layout test was possible. Automated source tests cover portal wiring, viewport CSS/state, fallback, merge, draft filtering, source-ID deduplication and both Blob/URL image paths; they do not substitute for browser rendering.
+- Manually check desktop at **1440×900, 1366×768, 1280×720, 1024×768**; tablet at **768×1024**; phones at **430×932, 390×844, 375×812, 360×800**; and phone landscape at approximately **844×390** and **932×430**.
+- At every viewport: open Create and Edit; check centered/visible heading and close button; scroll fields/photos without hiding the action row; focus each field with the mobile keyboard open; test Escape/focus return; check no page-level horizontal overflow; select/remove several photos and ensure previews fit; verify dashboard actions remain usable; verify published cards, details, Blob and managed images, draft hiding, publish/unpublish, edit/delete/reorder refresh behavior and API-offline local fallback.
+
+**Files changed for Session 044:**
+- `AI_HANDOFF.md`
+- `react-pilot/backend/README.md`
+- `react-pilot/backend/app/milestones.py`
+- `react-pilot/backend/tests/test_milestones.py`
+- `react-pilot/src/App.jsx`
+- `react-pilot/src/TimelineAdmin.jsx`
+- `react-pilot/src/timeline.css`
+- `react-pilot/src/timelineAdminApi.js`
+- `react-pilot/src/timelineAdminApi.test.js`
+- `react-pilot/src/timelineAdminDesign.test.js`
+- `react-pilot/src/timelinePageBuilderDesign.test.js`
+- `react-pilot/src/timelinePublicData.js` (new)
+- `react-pilot/src/timelinePublicData.test.js` (new)
+- `react-pilot/src/timelineRepository.js`
+
+**Verification actually performed:**
+- `node --test src/*.test.js`: **107 passed, 0 failed**.
+- `./.venv/bin/python3 -m unittest discover -s tests -v`: **47 passed, 0 failed**. Tests use isolated in-memory SQLite/rate-limit storage and temporary image directories; the local development database and browser database were not modified.
+- `npm run build`: **passed** with Vite 8.3.7.
+- Temporary migration check: Alembic upgrade through `0004_timeline_private_images` and `db check` both exited 0; direct database inspection confirmed revision `0004_timeline_private_images`, table `timeline_images`, and `timeline_milestones.source_id`. No persistent database was used.
+- An initial frontend run failed on a source assertion expecting the old exact `TimelineAdmin` opening tag; it was corrected to account for the new public-refresh prop, and final tests passed. An initial migration-check wrapper misread Alembic's captured output; rerunning with command exit codes and direct schema/revision assertions passed.
+- Git whitespace checks and the handoff validator are run after this update; record their exact final output below. Root `style.css` and all SESSION README files are untouched. No staging, commit or push is authorized.
+
+**Remaining:** browser/physical-device visual checks, admin review/import of actual IndexedDB records, production shared image storage and deployment configuration. Nothing was staged, committed or pushed.
+
+---
+
+## Session 045 — verified working-tree backup and Timeline publication preparation
+
+**Date:** 11 November 2026.
+
+**Task:** Back up the current Timeline working tree, review the pending Phase 3.2 integration for publication, and prepare the explicitly authorized commit/push and duplicate-copy cleanup.
+
+**Pre-flight and preservation:**
+- Confirmed repository path `/Users/vineela/Downloads/grid_website`, current branch `feature/timeline-admin`, and `origin` URL `https://github.com/adithadshetty3-dotcom/grid_website.git`. The branch matches the requested branch case-insensitively and the remote matches the expected repository.
+- Inspected the full Git status, staged and unstaged diffs, `.gitignore`, handoff and pending files. The index was empty; no unexpected staged changes existed. Root `style.css` is unchanged.
+- Preserved `SESSION025_README.md` through `SESSION029_README.md` and all other untracked files. The session README files are included in the Desktop source backup and are intentionally not part of the Timeline implementation commit.
+- Found local-only `react-pilot/backend/.env`, `.venv`, and Python bytecode/cache files. These are excluded from the backup and Git; their contents and the local Timeline database/uploads were not read or changed.
+- Corrected the React and backend README descriptions to reflect the implemented authenticated admin/API and public published-data merge rather than the earlier disconnected state.
+
+**Desktop backup:**
+- Created `/Users/vineela/Desktop/GRID_Timeline_Latest_2026-11-11` from the working source tree. The copy excludes `.git`, dependency/virtual environment directories, generated build/cache/bytecode files, `.env` files, databases, upload/private-upload directories, symlinks and `.DS_Store`.
+- Added `BACKUP_MANIFEST.txt` with source, branch, date and exclusions. SHA-256 comparisons passed for `AI_HANDOFF.md`, key public/admin/API/backend Timeline files, and all five SESSION README files. Verified the backend `.env` and `.venv` are absent from the copy.
+
+**Review and verification:**
+- Reviewed the pending Phase 3.2 implementation and related backend/admin/public-data source, tests, migrations and documentation. The code and test results are recorded in Session 044; its reported verification was 107/107 frontend tests, 47/47 backend tests, successful production build, and successful temporary migration/schema checks. Per the task instruction, these suites were not rerun.
+- The local handoff validator requires a staged `AI_HANDOFF.md`; it will be run after staging this handoff and the intended Timeline files. `git diff --check` will be recorded with its actual result before commit.
+- The source includes the earlier Timeline backend/admin work necessary for Phase 3.2. No credentials, `.env`, SQLite data, uploads, virtual environments, generated dependencies, SESSION README files, or root `style.css` are intended for GitHub.
+
+**Current functionality and pending steps:**
+- Phase 3.2 public/admin integration and the modal portal are implemented locally; the actual browser/device visual review and IndexedDB data review/import remain pending as documented in Session 044.
+- At the time of this entry, commit, push, remote verification and cleanup are still pending. No old project copy has been moved. After the first push is verified, inspect candidate GRID copies under Downloads, Desktop and Documents; move only verified obsolete duplicates to Trash, preserve copies with unique files/data, and do not empty Trash.
+- Next: stage and validate the intended Timeline files, commit, push without force, verify the remote/local state, inspect and safely handle verified obsolete copies, then append a factual outcome entry and synchronize the Desktop backup.
+
+**Run/test instructions:**
+- From `react-pilot/`, frontend tests: `node --test src/*.test.js`; production build: `npm run build`.
+- From `react-pilot/backend/` with its virtual environment active: `python -m unittest discover -s tests -v`.
+- Apply Alembic migrations only to the intended development database; migration verification in Session 044 used a temporary database.
