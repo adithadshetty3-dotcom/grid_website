@@ -2905,3 +2905,30 @@ Earlier worktree modifications to `react-pilot/README.md` and `react-pilot/vite.
 - From `react-pilot/`, frontend tests: `node --test src/*.test.js`; production build: `npm run build`.
 - From `react-pilot/backend/` with its virtual environment active: `python -m unittest discover -s tests -v`.
 - Apply Alembic migrations only to the intended development database; migration verification in Session 044 used a temporary database.
+
+---
+
+## Session 046 — record verified Timeline backup, publication and cleanup
+
+**Date:** 11 November 2026.
+
+**Task:** Record the completed working-tree backup, authorized Timeline commit/push, and verified duplicate cleanup so the project handoff reflects actual repository and Mac state.
+
+**Completed and verified:**
+- Desktop backup: `/Users/vineela/Desktop/GRID_Timeline_Latest_2026-11-11`. `BACKUP_MANIFEST.txt` records source, branch, date and exclusions. SHA-256 comparisons passed for the handoff, key Timeline frontend/admin/API/backend files and `SESSION025_README.md` through `SESSION029_README.md`. The local backend `.env` and `.venv` are excluded. The backup is synchronized with this final handoff update.
+- Commit `74b75a99e7b30e6af6708fb257c6c743ffe6f879` (`Integrate Timeline admin and public milestone data`) contains the reviewed 36-file Phase 3.2/backend/admin integration and updated handoff. The pre-commit handoff validator passed. The staged whitespace check passed and the staged credential-pattern scan found no matches. Root `style.css`, local environment/database/upload data and the five SESSION README files were excluded from the commit.
+- Pushed without force to `origin/feature/timeline-admin`; GitHub `ls-remote` returned the same commit hash, and the local branch tracks `origin/feature/timeline-admin`.
+- Moved the clean, byte-for-byte verified duplicate clone `/Users/vineela/Downloads/parkcare_completed/grid_website` to `/Users/vineela/.Trash/grid_website_parkcare_completed_2026-11-11`. The nested clone had the expected remote, was clean on `main`, and its six tracked project files matched the current source/backup. Only the nested GRID clone was moved; the parent Parkcare project, its database, uploads and other files were untouched. Trash was not emptied.
+- Preserved the five untracked SESSION README files in the active worktree and Desktop backup. The partial snapshots `grid_star_backup`, `grid_network_backup`, `grid_session025_backup` through `grid_session029_backup`, and `grid_timeline_session014_starfield_balance` remain in Downloads because they are partial file backups without Git metadata, not verified complete project clones; they were left untouched.
+- Final local status after the implementation push showed only those five untracked SESSION README files. No tracked changes remain. This handoff outcome entry is being published separately so the already-pushed implementation commit is not rewritten.
+
+**Verification and limitations:**
+- No test suites or production build were rerun; the task explicitly said to rely on Session 044's verified results unless necessary (107/107 frontend tests, 47/47 backend tests, successful Vite build and temporary migration/schema checks).
+- Synchronized the final handoff and README descriptions into the Desktop backup. Compared the complete filtered source inventory: 74 eligible source files matched 74 backup copies byte-for-byte, with only `BACKUP_MANIFEST.txt` as an additional backup file. No included files were missing or mismatched; there were no source symlinks. Confirmed `.env` and `.venv` are absent.
+- Actual browser/mobile visual QA, review/import of the user's IndexedDB contents, and production shared storage/deployment configuration remain pending.
+
+**Publication of this outcome record:** This handoff update is being committed and pushed separately so it records the verified outcome without rewriting the already-published implementation commit. The final remote/local status will be checked after that push.
+
+**Next project work:** Complete browser/device visual QA and explicitly review the existing IndexedDB records before any data cutover. Configure approved production shared storage and deployment only after team review.
+
+**Run/test instructions:** See Session 044 for the current frontend/backend test and build commands. Backend database migrations and image data remain separate from Git source and must not be copied into the repository.
