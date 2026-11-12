@@ -13,14 +13,14 @@
 <header class="nav glass">
   <a href="index.html" class="nav-brand">GRID</a>
 
-  <nav>
+ <nav>
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="aboutus.html">About Us</a></li>
+      <li><a href="index.html#home">Home</a></li>
+      <li><a href="index.html#about">About Us</a></li>
       <li><a href="team.html">Meet the Team</a></li>
       <li><a href="Timeline.html">Timeline</a></li>
-      <li><a href="FAQ/FAQ.html">FAQs</a></li>
-      <li><a href="ContactUs.html">Contact Us</a></li>
+      <li><a href="index.html#faqs">FAQs</a></li>
+      <li><a href="index.html#contact">Contact Us</a></li>
     </ul>
   </nav>
 
@@ -85,6 +85,18 @@
 
   </section>
 </main>
+<script>
+  const navToggle = document.querySelector('.nav-toggle');
+  const navbar = document.querySelector('.nav');
 
+  navToggle.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('nav-open');
+
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+
+</body>
+</html>
 </body>
 </html>
