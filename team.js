@@ -3,7 +3,7 @@
 
 const teamGroups = [
     { id: "leads", title: "GRID Core Team Leads", description: "Meet the leaders guiding GRID.", icon: "♛", count: 6 },
-    { id: "technical", title: "Technical", description: "Meet our technology and development team.", icon: "</>", count: 3 },
+    { id: "technical", title: "Technical", description: "Meet our technology and development team.", icon: "⌘", count: 3 },
     { id: "design", title: "Design", description: "Meet our creative minds.", icon: "✦", count: 3 },
     { id: "marketing", title: "Marketing & Outreach", description: "Meet our marketing and outreach team.", icon: "↗", count: 3 },
     { id: "events", title: "Event Management", description: "Meet the people behind our events.", icon: "▦", count: 3 },
@@ -43,7 +43,7 @@ const teamMembers = {
     events: [
         { name: "Gowthami S", role: "Event Management", photo: "images/team/events1.jpeg", linkedin: "https://www.linkedin.com/in/gowthami--s/" },
         { name: "Lavanya R", role: "Event Management", photo: "images/team/events2.jpeg", linkedin: "https://www.linkedin.com/in/lavanyaravi8106?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
-        { name: "Samrah Mohmood ", role: "Event Management", photo: "images/team/events3.jpeg", linkedin: "https://www.linkedin.com/in/samrah-mohmood-3a453a453?utm_source=share_via&utm_content=profile&utm_medium=member_android" }
+        { name: "Samrah Mohmood ", role: "Event Management", photo: "images/team/events3.jpeg", linkedin: "https://www.linkedin.com/in/samrah-mahmood-8342a0367" }
     ],
 
     social: [
@@ -117,10 +117,10 @@ teamGroups.forEach((group, index) => {
     box.type = "button";
 
     box.innerHTML = `
-        <span class="category-number">0${index + 1} / 06</span>
+        
         <span class="category-icon">${group.icon}</span>
         <span class="category-title">${group.title}</span>
-        <span class="category-count">${group.count} Members</span>
+    
         <span class="category-explore">EXPLORE TEAM ↗</span>
     `;
 
