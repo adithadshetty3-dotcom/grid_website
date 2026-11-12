@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About | GRID_KSSEM</title>
+  <meta name="description" content="GRID is the student-run technical club of K. S. School of Engineering and Management.">
+ 
+  <script>document.documentElement.classList.add('js');</script>
+ 
+  <!-- Shared design system (unchanged) -->
+  <link rel="stylesheet" href="style.css">
+ 
+  <!-- Page-only additions for the MLH-style layout. style.css is untouched. -->
+  <style>
+    /* Nav: brand | links | CTA */
+    .nav-actions { display: flex; align-items: center; gap: var(--space-2); }
+    .nav-actions .btn { padding: 0.5rem 1.1rem; }
+ 
+    /* Centered hero */
+    .about-hero { text-align: center; }
+    .about-title, .about-intro { margin-left: auto; margin-right: auto; }
+    .about-actions { justify-content: center; }
+ 
+    /* Decorative grid under the hero (a nod to the club name) */
+    .hero-grid {
+      position: relative;
+      height: 224px;
+      margin-top: var(--space-6);
+      background-image:
+        linear-gradient(var(--glass-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: linear-gradient(to bottom, #000 20%, transparent 100%);
+              mask-image: linear-gradient(to bottom, #000 20%, transparent 100%);
+    }
+    .hero-grid::before, .hero-grid::after {
+      content: "";
+      position: absolute;
+      width: 56px; height: 56px;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent-dim);
+    }
+    .hero-grid::before { left: 224px; top: 56px; }
+    .hero-grid::after  { left: 504px; top: 0; background: transparent; }
+ 
+    /* Section headings centered, MLH-style */
+    .about-section-heading { text-align: center; margin-bottom: var(--space-4); }
+    .about-section-heading p { margin-left: auto; margin-right: auto; }
+ 
+    /* Big stat-style letter on each pillar card */
+    .about-card .about-card-index {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      text-transform: none;
+      margin-bottom: var(--space-4);
+    }
+ 
+    /* Closing CTA band */
+    .about-cta-wrap { margin-top: var(--space-7); }
+    .about-cta { text-align: center; padding: var(--space-6) var(--space-3); }
+    .about-cta p { margin: var(--space-2) auto 0; }
+    .about-cta .about-actions { margin-top: var(--space-4); }
+ 
+    /* Footer */
+    .footer { position: relative; z-index: 1; }
+    .footer-brand p { max-width: 32ch; font-size: var(--text-sm); }
+ 
+    /* Mobile menu */
+    @media (max-width: 768px) {
+      .nav { flex-wrap: wrap; }
+      .nav-links { order: 3; }
+      .nav .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        width: 100%;
+        padding: var(--space-2) 0 var(--space-1);
+      }
+      .hero-grid { height: 168px; margin-top: var(--space-5); }
+      .hero-grid::before { left: 112px; }
+      .hero-grid::after { left: 224px; }
+      .about-card .about-card-index { font-size: var(--text-2xl); margin-bottom: var(--space-3); }
+      .about-cta { padding: var(--space-5) var(--space-3); }
+    }
+ 
+    /* =====================  ANIMATIONS  ===================== */
+    @keyframes rise   { from { opacity: 0; transform: translateY(24px); } }
+    @keyframes navIn  { from { opacity: 0; transform: translate(-50%, -24px); } }
+    @keyframes drop   { from { opacity: 0; transform: translateY(-8px); } }
+    @keyframes shine  { to { background-position: 200% 0; } }
+ 
+    /* Page load: nav drops in, hero stacks up one piece at a time */
+    .nav { animation: navIn .8s var(--ease) backwards; }
+    .about-hero > * { animation: rise .8s var(--ease) backwards; }
+    .about-hero > :nth-child(1) { animation-delay: .15s; }
+    .about-hero > :nth-child(2) { animation-delay: .27s; }
+    .about-hero > :nth-child(3) { animation-delay: .39s; }
+    .about-hero > :nth-child(4) { animation-delay: .51s; }
+    .about-hero > :nth-child(5) { animation-delay: .7s; animation-duration: 1.2s; }
+ 
+    /* Moving shine across the crimson word */
+    .about-title span {
+      background: linear-gradient(90deg, var(--accent) 0%, #ff7a92 50%, var(--accent) 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+              color: transparent;
+      animation: shine 5s linear infinite;
+    }
+ 
+ 
+    /* Scroll reveal (elements get data-reveal from JS, then .in when visible) */
+    .js [data-reveal]:not(.in) { opacity: 0; }
+    [data-reveal].in { animation: rise .8s var(--ease) backwards; animation-delay: var(--d, 0s); }
+    .about-vision-list li[data-reveal].in { animation-name: slideIn; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-24px); } }
+ 
+    /* Card hover: lift, crimson edge, cursor-following glow */
+    .about-card, .about-vision-card {
+      position: relative;
+      transition: transform .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease);
+    }
+    .about-card::after, .about-vision-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(216, 30, 63, .16), transparent 70%);
+      opacity: 0;
+      transition: opacity .3s var(--ease);
+      pointer-events: none;
+    }
+    .about-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent-dim);
+      box-shadow: 0 16px 40px -18px var(--accent-glow);
+    }
+    .about-card:hover::after, .about-vision-card:hover::after { opacity: 1; }
+    .about-vision-card:hover { border-color: var(--accent-dim); }
+    .about-card .about-card-index { transition: transform .3s var(--ease); }
+    .about-card:hover .about-card-index { transform: translateX(6px); }
+    .about-vision-list span { transition: transform .25s var(--ease); }
+    .about-vision-list li:hover span { transform: translateX(6px); }
+ 
+    /* Footer link nudge */
+    .footer-col a { display: inline-block; transition: color .15s var(--ease), transform .2s var(--ease); }
+    .footer-col a:hover { transform: translateX(4px); }
+ 
+    /* Scroll progress bar */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+      transform: scaleX(0); transform-origin: left;
+      z-index: 200;
+    }
+ 
+    @media (max-width: 768px) {
+      .nav .nav-links.open { animation: drop .3s var(--ease); }
+    }
+ 
+    /* ===== Factory scene (replaces the hero grid) ===== */
+    .hero-factory { position: relative; max-width: 860px; margin: var(--space-5) auto 0; }
+    .hero-factory::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(var(--glass-border) 1px, transparent 1px), linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 72%);
+              mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 72%);
+    }
+    .hero-factory svg { position: relative; display: block; width: 100%; height: auto; overflow: visible; }
+ 
+    .bx polygon { stroke: rgba(255,255,255,.2); stroke-width: 1; stroke-linejoin: round; }
+    .c polygon { stroke: #3a0711; }
+    .c .t { fill: #E8456A; } .c .l { fill: var(--accent); } .c .r { fill: #A5152F; }
+    .d .t { fill: #202027; } .d .l { fill: #17171c; } .d .r { fill: #0f0f13; }
+    .g { stroke: var(--glass-border); stroke-width: 1; }
+    .ld { stroke: var(--text-primary); stroke-width: 1.5; stroke-linecap: round; }
+    .belt { stroke: var(--text-muted); stroke-width: 2; stroke-dasharray: 10 14; opacity: .7; animation: dash 1s linear infinite; }
+    .rope { fill: var(--text-muted); transform-box: fill-box; transform-origin: 50% 0; animation: lift 5s ease-in-out infinite alternate; }
+    .hoist { animation: lift-crate 5s ease-in-out infinite alternate; }
+    .run { animation: run 7.2s linear infinite; opacity: 0; }
+    .scr { fill: #1b0910; stroke: var(--accent-dim); }
+    .bar { fill: var(--accent); transform-box: fill-box; transform-origin: 50% 100%; animation: bar 1.4s ease-in-out infinite alternate; }
+    .gear { fill: none; stroke: var(--accent); stroke-width: 3; }
+    .hub { fill: var(--accent); }
+    .tooth { stroke: var(--accent); stroke-width: 5; }
+    .spin { animation: spin 5s linear infinite; }
+    .spark { fill: #ffb199; opacity: 0; animation: spark 1.2s ease-out infinite; }
+ 
+    .fig line { stroke: var(--text-primary); stroke-width: 2.2; stroke-linecap: round; }
+    .fig .hd { fill: var(--text-primary); }
+    .fig .hat { fill: var(--accent); stroke: #fff; stroke-width: .6; }
+    .fig .hm { fill: var(--text-primary); }
+    .fig .lg, .fig .arm { transform-origin: 0 0; }
+    .walk .lg.a, .climber .lg.a { animation: swing .6s ease-in-out infinite alternate; }
+    .walk .lg.b, .climber .lg.b { animation: swing .6s ease-in-out infinite alternate-reverse; }
+    .walk .arm, .climber .arm { animation: swing .6s ease-in-out infinite alternate; }
+    .walk .arm.b, .climber .arm.b { animation-direction: alternate-reverse; }
+    .hold .arm { animation: none; transform: rotate(170deg); }
+    .wave .arm.b { animation: wave .7s ease-in-out infinite alternate; }
+    .hit .arm.a { animation: hammer 1.2s ease-in infinite; }
+    .hit .arm.b { transform: rotate(-20deg); }
+    .climb { animation: climb 6s ease-in-out infinite alternate; }
+    .walker { animation: walk 8s linear infinite; }
+ 
+    @keyframes dash  { to { stroke-dashoffset: -24; } }
+    @keyframes run   { 0% { transform: translate(0,0); opacity: 0; } 6% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translate(259.8px,150.0px); opacity: 0; } }
+    @keyframes lift  { to { transform: scaleY(.27); } }
+    @keyframes lift-crate { to { transform: translateY(-45px); } }
+    @keyframes bar   { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+    @keyframes spin  { to { transform: rotate(360deg); } }
+    @keyframes spark { 0%, 50% { opacity: 0; transform: translate(0,0); } 55% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)); } }
+    @keyframes swing { from { transform: rotate(-28deg); } to { transform: rotate(28deg); } }
+    @keyframes wave  { from { transform: rotate(150deg); } to { transform: rotate(205deg); } }
+    @keyframes hammer { 0%, 40% { transform: rotate(165deg); } 55%, 70% { transform: rotate(20deg); } 100% { transform: rotate(165deg); } }
+    @keyframes climb { to { transform: translateY(-84px); } }
+    @keyframes walk  { 0% { transform: translate(0,0); opacity: 0; } 6% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translate(164px,95px); opacity: 0; } }
+ 
+    /* Respect reduced-motion settings */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+      .js [data-reveal]:not(.in) { opacity: 1 !important; }
+      .about-card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- ===== Nav ===== -->
+  <nav class="nav glass" aria-label="Main">
+    <a class="nav-brand" href="https://gridkssem.framer.website/">GRID</a>
+ 
+    <ul class="nav-links" id="nav-links">
+      <li><a href="about.html" aria-current="page">About Us</a></li>
+      <li><a href="https://gridkssem.framer.website/#m1">Core Team</a></li>
+      <li><a href="https://gridkssem.framer.website/#t1">Timeline</a></li>
+      <li><a href="https://gridkssem.framer.website/#faq">FAQ</a></li>
+      <li><a href="https://gridkssem.framer.website/#f1">Contact Us</a></li>
+    </ul>
+ 
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="https://gridkssem.framer.website/#f1">Join GRID</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+ 
+  <main class="about-page">
+ 
+    <!-- ===== Hero ===== -->
+    <header class="container about-hero">
+      <p class="about-eyebrow">About GRID</p>
+      <h1 class="about-title">What is <span>GRID?</span></h1>
+      <p class="about-intro">
+        GRID stands for Group for Resonance, Innovation and Development. We are the official technical club of
+        K. S. School of Engineering and Management, run by students, for students. We bring curious people together to
+        build projects, share ideas and gain real-world technical skills.
+      </p>
+      <div class="about-actions">
+        <a class="btn btn-primary" href="https://gridkssem.framer.website/#f1">Join GRID</a>
+        <a class="btn btn-ghost" href="#vision">Our vision</a>
+      </div>
+      <div class="hero-factory" aria-hidden="true"><svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" focusable="false"><g class="bx d"><polygon class="l" points="224.8,305.0 536.6,485.0 536.6,495.0 224.8,315.0"/><polygon class="r" points="761.8,355.0 536.6,485.0 536.6,495.0 761.8,365.0"/><polygon class="t" points="450.0,175.0 761.8,355.0 536.6,485.0 224.8,305.0"/></g><g><line class="g" x1="450.0" y1="175.0" x2="224.8" y2="305.0"/><line class="g" x1="484.6" y1="195.0" x2="259.5" y2="325.0"/><line class="g" x1="519.3" y1="215.0" x2="294.1" y2="345.0"/><line class="g" x1="553.9" y1="235.0" x2="328.8" y2="365.0"/><line class="g" x1="588.6" y1="255.0" x2="363.4" y2="385.0"/><line class="g" x1="623.2" y1="275.0" x2="398.0" y2="405.0"/><line class="g" x1="657.8" y1="295.0" x2="432.7" y2="425.0"/><line class="g" x1="692.5" y1="315.0" x2="467.3" y2="445.0"/><line class="g" x1="727.1" y1="335.0" x2="502.0" y2="465.0"/><line class="g" x1="761.8" y1="355.0" x2="536.6" y2="485.0"/><line class="g" x1="450.0" y1="175.0" x2="761.8" y2="355.0"/><line class="g" x1="415.4" y1="195.0" x2="727.1" y2="375.0"/><line class="g" x1="380.7" y1="215.0" x2="692.5" y2="395.0"/><line class="g" x1="346.1" y1="235.0" x2="657.8" y2="415.0"/><line class="g" x1="311.4" y1="255.0" x2="623.2" y2="435.0"/><line class="g" x1="276.8" y1="275.0" x2="588.6" y2="455.0"/><line class="g" x1="242.2" y1="295.0" x2="553.9" y2="475.0"/></g><g class="bx d"><polygon class="l" points="436.1,27.0 450.0,35.0 450.0,197.0 436.1,189.0"/><polygon class="r" points="463.9,27.0 450.0,35.0 450.0,197.0 463.9,189.0"/><polygon class="t" points="450.0,19.0 463.9,27.0 450.0,35.0 436.1,27.0"/></g><g class="bx c"><polygon class="l" points="403.2,46.0 417.1,54.0 417.1,66.0 403.2,58.0"/><polygon class="r" points="463.9,27.0 417.1,54.0 417.1,66.0 463.9,39.0"/><polygon class="t" points="450.0,19.0 463.9,27.0 417.1,54.0 403.2,46.0"/></g><g class="bx d"><polygon class="l" points="385.9,192.0 680.4,362.0 680.4,382.0 385.9,212.0"/><polygon class="r" points="718.5,340.0 680.4,362.0 680.4,382.0 718.5,360.0"/><polygon class="t" points="424.0,170.0 718.5,340.0 680.4,362.0 385.9,192.0"/></g><line class="belt" x1="408.4" y1="183.0" x2="696.0" y2="349.0"/><g class="run" style="animation-delay:-0s"><g class="bx c"><polygon class="l" points="398.0,163.0 422.3,177.0 422.3,205.0 398.0,191.0"/><polygon class="r" points="446.5,163.0 422.3,177.0 422.3,205.0 446.5,191.0"/><polygon class="t" points="422.3,149.0 446.5,163.0 422.3,177.0 398.0,163.0"/></g></g><g class="run" style="animation-delay:-2.4s"><g class="bx c"><polygon class="l" points="398.0,163.0 422.3,177.0 422.3,205.0 398.0,191.0"/><polygon class="r" points="446.5,163.0 422.3,177.0 422.3,205.0 446.5,191.0"/><polygon class="t" points="422.3,149.0 446.5,163.0 422.3,177.0 398.0,163.0"/></g></g><g class="run" style="animation-delay:-4.8s"><g class="bx c"><polygon class="l" points="398.0,163.0 422.3,177.0 422.3,205.0 398.0,191.0"/><polygon class="r" points="446.5,163.0 422.3,177.0 422.3,205.0 446.5,191.0"/><polygon class="t" points="422.3,149.0 446.5,163.0 422.3,177.0 398.0,163.0"/></g></g><rect class="rope" x="416.1" y="58.0" width="2" height="62.0"/><g class="hoist"><g class="bx c"><polygon class="l" points="392.8,120.0 417.1,134.0 417.1,162.0 392.8,148.0"/><polygon class="r" points="441.3,120.0 417.1,134.0 417.1,162.0 441.3,148.0"/><polygon class="t" points="417.1,106.0 441.3,120.0 417.1,134.0 392.8,120.0"/></g></g><g class="bx c"><polygon class="l" points="276.8,175.0 337.4,210.0 337.4,330.0 276.8,295.0"/><polygon class="r" points="398.0,175.0 337.4,210.0 337.4,330.0 398.0,295.0"/><polygon class="t" points="337.4,140.0 398.0,175.0 337.4,210.0 276.8,175.0"/></g><g><line class="ld" x1="291.5" y1="302.5" x2="291.5" y2="186.5"/><line class="ld" x1="319.2" y1="318.5" x2="319.2" y2="202.5"/><line class="ld" x1="291.5" y1="292.5" x2="319.2" y2="308.5"/><line class="ld" x1="291.5" y1="276.5" x2="319.2" y2="292.5"/><line class="ld" x1="291.5" y1="260.5" x2="319.2" y2="276.5"/><line class="ld" x1="291.5" y1="244.5" x2="319.2" y2="260.5"/><line class="ld" x1="291.5" y1="228.5" x2="319.2" y2="244.5"/><line class="ld" x1="291.5" y1="212.5" x2="319.2" y2="228.5"/><line class="ld" x1="291.5" y1="196.5" x2="319.2" y2="212.5"/></g><g transform="translate(305.4,298.5) scale(1.25)"><g class="climb"><g class="fig climber"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/></g></g></g><g transform="translate(337.4,175.0) scale(1.25)"><g class="fig wave"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/></g></g><g class="bx d"><polygon class="l" points="424.0,270.0 476.0,300.0 476.0,370.0 424.0,340.0"/><polygon class="r" points="527.9,270.0 476.0,300.0 476.0,370.0 527.9,340.0"/><polygon class="t" points="476.0,240.0 527.9,270.0 476.0,300.0 424.0,270.0"/></g><g transform="matrix(.866 .5 0 1 432.7 285.0)"><rect class="scr" x="0" y="0" width="42" height="26" rx="2"/><rect class="bar" x="5" y="14" width="5" height="8" style="animation-delay:-0.00s"/><rect class="bar" x="14" y="7" width="5" height="15" style="animation-delay:-0.35s"/><rect class="bar" x="23" y="11" width="5" height="11" style="animation-delay:-0.70s"/><rect class="bar" x="32" y="4" width="5" height="18" style="animation-delay:-1.05s"/></g><g transform="matrix(-.866 .5 0 1 502.0 317.0)"><g class="spin"><circle class="gear" r="13"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(0)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(45)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(90)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(135)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(180)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(225)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(270)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(315)"/><circle class="hub" r="4"/></g></g><g class="bx d"><polygon class="l" points="551.3,366.5 575.6,380.5 575.6,400.5 551.3,386.5"/><polygon class="r" points="599.8,366.5 575.6,380.5 575.6,400.5 599.8,386.5"/><polygon class="t" points="575.6,352.5 599.8,366.5 575.6,380.5 551.3,366.5"/></g><circle class="spark" cx="569.6" cy="361.5" r="2" style="--dx:-12px;--dy:-8px"/><circle class="spark" cx="575.6" cy="357.5" r="2" style="--dx:0px;--dy:-16px"/><circle class="spark" cx="581.6" cy="361.5" r="2" style="--dx:12px;--dy:-8px"/><g transform="translate(554.8,376.5) scale(1.3)"><g class="fig hit"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/><rect class="hm" x="-4" y="12" width="8" height="5" rx="1"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/></g></g><g transform="translate(389.4,345.0) scale(1.25)"><g class="walker"><g class="fig walk hold"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/><g transform="translate(0,-52)"><g class="bx c"><polygon class="l" points="-12.1,-11.0 0.0,-4.0 0.0,7.0 -12.1,0.0"/><polygon class="r" points="12.1,-11.0 0.0,-4.0 0.0,7.0 12.1,0.0"/><polygon class="t" points="0.0,-18.0 12.1,-11.0 0.0,-4.0 -12.1,-11.0"/></g></g></g></g></g></svg></div>
+    </header>
+ 
+    <!-- ===== Pillars ===== -->
+    <section class="container" aria-labelledby="pillars-title">
+      <div class="about-section-heading">
+        <p class="about-eyebrow">Our name</p>
+        <h2 id="pillars-title">Three ideas behind GRID</h2>
+      </div>
+ 
+      <div class="about-pillar-grid">
+        <article class="card about-card">
+          <p class="about-card-index">R</p>
+          <h3>Resonance</h3>
+          <p>Collaborate with like-minded peers and work on exciting tech projects together.</p>
+        </article>
+ 
+        <article class="card about-card">
+          <p class="about-card-index">I</p>
+          <h3>Innovation</h3>
+          <p>Experiment with emerging technologies, take part in hackathons and drive boundary-pushing projects.</p>
+        </article>
+ 
+        <article class="card about-card">
+          <p class="about-card-index">D</p>
+          <h3>Development</h3>
+          <p>Gain hands-on experience through workshops, training and mentorship while building an impressive portfolio.</p>
+        </article>
+      </div>
+    </section>
+ 
+    <!-- ===== Vision ===== -->
+    <section class="container about-vision" id="vision" aria-labelledby="vision-title">
+      <div class="about-vision-copy">
+        <p class="about-eyebrow">Where we're headed</p>
+        <h2 id="vision-title">Our vision</h2>
+        <p>Learning works best when theory meets practice, and when people from every discipline learn side by side.</p>
+      </div>
+ 
+      <div class="card about-vision-card">
+        <ul class="about-vision-list">
+          <li><span>01</span> Conduct events that help students bridge the gap between academic and skill-based learning.</li>
+          <li><span>02</span> Provide an environment that encourages teamwork and learning.</li>
+          <li><span>03</span> Connect like-minded individuals across disciplines.</li>
+        </ul>
+      </div>
+    </section>
+ 
+    <!-- ===== Closing CTA ===== -->
+    <section class="container about-cta-wrap" aria-labelledby="cta-title">
+      <div class="card card-featured about-cta">
+        <h2 id="cta-title">Join GRID</h2>
+        <p>Build projects, share ideas and gain real-world technical skills with people who love to learn.</p>
+        <div class="about-actions">
+          <a class="btn btn-primary" href="https://gridkssem.framer.website/#f1">Contact Us</a>
+          <a class="btn btn-ghost" href="https://gridkssem.framer.website/#m1">Meet the Core Team</a>
+        </div>
+      </div>
+    </section>
+ 
+  </main>
+ 
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <h4>GRID_KSSEM</h4>
+          <p>The student-run technical club of K. S. School of Engineering and Management.</p>
+        </div>
+ 
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="https://gridkssem.framer.website/#m1">Core Team</a></li>
+            <li><a href="https://gridkssem.framer.website/#t1">Timeline</a></li>
+            <li><a href="https://gridkssem.framer.website/#faq">FAQ</a></li>
+          </ul>
+        </div>
+ 
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="https://www.instagram.com/grid.kssem">Instagram</a></li>
+            <li><a href="mailto:grid.kssem@gmail.com">Email</a></li>
+            <li><a href="https://gridkssem.framer.website/#f1">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+ 
+      <div class="footer-bottom">
+        <span>&copy; 2026 GRID, K. S. School of Engineering and Management</span>
+        <span>By students, for students</span>
+      </div>
+    </div>
+  </footer>
+ 
+  <script>
+    (function () {
+      /* Mobile menu */
+      var toggle = document.getElementById('nav-toggle');
+      var links = document.getElementById('nav-links');
+      toggle.addEventListener('click', function () {
+        var open = links.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+ 
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ 
+      /* Scroll progress bar */
+      var bar = document.createElement('div');
+      bar.className = 'scroll-progress';
+      bar.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(bar);
+      var ticking = false;
+      function updateBar() {
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = 'scaleX(' + (max > 0 ? window.scrollY / max : 0) + ')';
+        ticking = false;
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(updateBar); }
+      }, { passive: true });
+      updateBar();
+ 
+      /* Cursor-following glow on cards */
+      document.querySelectorAll('.about-card, .about-vision-card').forEach(function (el) {
+        el.addEventListener('mousemove', function (e) {
+          var r = el.getBoundingClientRect();
+          el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+      });
+ 
+      /* Scroll reveal with staggered delays */
+      if (!('IntersectionObserver' in window)) { document.documentElement.classList.remove('js'); return; }
+      var groups = [
+        ['.about-section-heading', 0],
+        ['.about-pillar-grid .about-card', .12],
+        ['.about-vision-copy', 0],
+        ['.about-vision-card', .12],
+        ['.about-vision-list li', .15],
+        ['.about-cta', 0],
+        ['.footer-col', .1],
+        ['.footer-bottom', 0]
+      ];
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.15 });
+      groups.forEach(function (g) {
+        document.querySelectorAll(g[0]).forEach(function (el, i) {
+          el.setAttribute('data-reveal', '');
+          el.style.setProperty('--d', (i * g[1]) + 's');
+          io.observe(el);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
