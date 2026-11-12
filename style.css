@@ -5,7 +5,7 @@
    ========================================================= */
 
 /* ---------- Fonts ---------- */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 /* ---------- Tokens ---------- */
 :root {
@@ -14,14 +14,14 @@
   --bg-surface:      #121215;   /* raised, pre-glass panel base */
   --glass-fill:      rgba(255, 255, 255, 0.035);
   --glass-border:    rgba(255, 255, 255, 0.08);
-  --accent:          #D81E3F;   /* crimson — primary accent */
-  --accent-dim:      #7A0F22;   /* deep crimson — borders, dividers */
-  --accent-glow:     rgba(216, 30, 63, 0.35);
+  --accent:          #7A1620;   /* dark maroon — primary accent, not bright red */
+  --accent-dim:      #431019;   /* deep wine — borders, dividers */
+  --accent-glow:     rgba(122, 22, 32, 0.35);
   --text-primary:    #F2EFEA;   /* soft off-white */
   --text-muted:      #8A8690;   /* desaturated grey-violet */
 
   /* Type */
-  --font-display: 'Space Grotesk', sans-serif;
+  --font-display: 'JetBrains Mono', monospace;
   --font-body: 'Inter', sans-serif;
 
   /* Type scale */
@@ -65,7 +65,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Ambient glow — a single faint red wash behind the hero, not repeated per-section */
+/* Ambient glow — a single faint maroon wash behind the hero, not repeated per-section */
 body::before {
   content: "";
   position: fixed;
@@ -82,11 +82,28 @@ body::before {
   z-index: 0;
 }
 
+/* Particle-network canvas — see background.js. Sits behind everything. */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content needs to sit above the canvas/glow, since both are position: fixed */
+.nav, main, .footer, .container {
+  position: relative;
+  z-index: 1;
+}
+
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 h1 { font-size: var(--text-3xl); font-weight: 700; }
@@ -95,6 +112,27 @@ h3 { font-size: var(--text-xl); }
 h4 { font-size: var(--text-lg); }
 
 p { color: var(--text-muted); max-width: 65ch; }
+
+/* Small uppercase label, e.g. a section kicker — "GET IN TOUCH" */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
 
 a { color: inherit; text-decoration: none; }
 
