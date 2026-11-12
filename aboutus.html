@@ -13,10 +13,6 @@
  
   <!-- Page-only additions for the MLH-style layout. style.css is untouched. -->
   <style>
-    /* Nav: brand | links | CTA */
-    .nav-actions { display: flex; align-items: center; gap: var(--space-2); }
-    .nav-actions .btn { padding: 0.5rem 1.1rem; }
- 
     /* Centered hero */
     .about-hero { text-align: center; }
     .about-title, .about-intro { margin-left: auto; margin-right: auto; }
@@ -68,17 +64,7 @@
     .footer { position: relative; z-index: 1; }
     .footer-brand p { max-width: 32ch; font-size: var(--text-sm); }
  
-    /* Mobile menu */
     @media (max-width: 768px) {
-      .nav { flex-wrap: wrap; }
-      .nav-links { order: 3; }
-      .nav .nav-links.open {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-2);
-        width: 100%;
-        padding: var(--space-2) 0 var(--space-1);
-      }
       .hero-grid { height: 168px; margin-top: var(--space-5); }
       .hero-grid::before { left: 112px; }
       .hero-grid::after { left: 224px; }
@@ -88,18 +74,14 @@
  
     /* =====================  ANIMATIONS  ===================== */
     @keyframes rise   { from { opacity: 0; transform: translateY(24px); } }
-    @keyframes navIn  { from { opacity: 0; transform: translate(-50%, -24px); } }
-    @keyframes drop   { from { opacity: 0; transform: translateY(-8px); } }
     @keyframes shine  { to { background-position: 200% 0; } }
  
     /* Page load: nav drops in, hero stacks up one piece at a time */
-    .nav { animation: navIn .8s var(--ease) backwards; }
     .about-hero > * { animation: rise .8s var(--ease) backwards; }
     .about-hero > :nth-child(1) { animation-delay: .15s; }
-    .about-hero > :nth-child(2) { animation-delay: .27s; }
-    .about-hero > :nth-child(3) { animation-delay: .39s; }
-    .about-hero > :nth-child(4) { animation-delay: .51s; }
-    .about-hero > :nth-child(5) { animation-delay: .7s; animation-duration: 1.2s; }
+    .about-hero > :nth-child(2) { animation-delay: .3s; }
+    .about-hero > :nth-child(3) { animation-delay: .45s; }
+    .about-hero > :nth-child(4) { animation-delay: .7s; animation-duration: 1.2s; }
  
     /* Moving shine across the crimson word */
     .about-title span {
@@ -158,10 +140,6 @@
       box-shadow: 0 0 12px var(--accent-glow);
       transform: scaleX(0); transform-origin: left;
       z-index: 200;
-    }
- 
-    @media (max-width: 768px) {
-      .nav .nav-links.open { animation: drop .3s var(--ease); }
     }
  
     /* ===== Factory scene (replaces the hero grid) ===== */
@@ -232,33 +210,10 @@
 </head>
 <body>
  
-  <!-- ===== Nav ===== -->
-  <nav class="nav glass" aria-label="Main">
-    <a class="nav-brand" href="https://gridkssem.framer.website/">GRID</a>
- 
-    <ul class="nav-links" id="nav-links">
-      <li><a href="about.html" aria-current="page">About Us</a></li>
-      <li><a href="https://gridkssem.framer.website/#m1">Core Team</a></li>
-      <li><a href="https://gridkssem.framer.website/#t1">Timeline</a></li>
-      <li><a href="https://gridkssem.framer.website/#faq">FAQ</a></li>
-      <li><a href="https://gridkssem.framer.website/#f1">Contact Us</a></li>
-    </ul>
- 
-    <div class="nav-actions">
-      <a class="btn btn-primary" href="https://gridkssem.framer.website/#f1">Join GRID</a>
-      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16"/>
-        </svg>
-      </button>
-    </div>
-  </nav>
- 
   <main class="about-page">
  
     <!-- ===== Hero ===== -->
     <header class="container about-hero">
-      <p class="about-eyebrow">About GRID</p>
       <h1 class="about-title">What is <span>GRID?</span></h1>
       <p class="about-intro">
         GRID stands for Group for Resonance, Innovation and Development. We are the official technical club of
@@ -369,14 +324,6 @@
  
   <script>
     (function () {
-      /* Mobile menu */
-      var toggle = document.getElementById('nav-toggle');
-      var links = document.getElementById('nav-links');
-      toggle.addEventListener('click', function () {
-        var open = links.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
- 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
  
       /* Scroll progress bar */
