@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet the Team | GRID KSSEM</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="team.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="nav glass">
+        <a href="index.html" class="nav-brand">GRID</a>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="team.html" aria-current="page">Meet the Team</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-label="Open menu"
+                aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <!-- Core Team Content -->
+    
+<main id="core-team">
+
+    <!-- Animated Hero Section -->
+    <section class="team-hero">
+
+        <div class="team-orbit"></div>
+
+        <div class="team-label">
+            ✦ THE PEOPLE BEHIND THE PROGRESS
+        </div>
+
+        <h1 class="team-heading">
+            MEET THE
+            <span>MINDS.</span>
+        </h1>
+
+        <p class="team-description">
+            Great ideas need great people.
+            Meet the passionate minds, creative thinkers
+            and innovators who bring GRID to life.
+        </p>
+
+        <div class="team-scroll">
+            ↓ &nbsp; DISCOVER OUR TEAM
+        </div>
+
+    </section>
+    
+<!-- CORE TEAM MEMBERS SECTION -->
+
+
+<!-- Six GRID team categories -->
+
+<!-- TEAM CATEGORY SELECTION -->
+
+<section class="members-section" id="members">
+
+    <div class="members-header">
+        <p class="section-label">THE PEOPLE BEHIND GRID</p>
+        <h2>EXPLORE OUR <span>TEAMS</span></h2>
+        <p class="members-intro">
+            Six teams. One vision. Discover the people
+            who make GRID extraordinary.
+        </p>
+    </div>
+
+    <!-- Six clickable categories -->
+    <div id="team-categories" class="team-categories"></div>
+
+    <!-- Selected category members -->
+    <div id="team-members-view" hidden>
+
+        <button id="back-to-teams" class="back-button">
+            ← Back to Teams
+        </button>
+
+        <div class="members-header selected-header">
+            <p class="section-label">MEET THE PEOPLE</p>
+            <h2 id="selected-team-title"></h2>
+            <p id="selected-team-description"></p>
+        </div>
+
+        <div id="selected-members" class="members-grid"></div>
+
+    </div>
+
+</section>
+
+
+
+
+</main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>GRID</h4>
+                    <p>The technical club building things worth shipping.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="team.html">Meet the Team</a></li>
+                        <li><a href="timeline.html">Timeline</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="mailto:hello@grid.club">Email</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; <span id="footer-year"></span> GRID</span>
+                <span>Built by the GRID team</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById("footer-year").textContent =
+            new Date().getFullYear();
+    </script>
+
+    <script src="team.js"></script>
+
+</body>
+</html>

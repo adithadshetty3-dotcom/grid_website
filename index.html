@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GRID — Home</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="home.css" />
+</head>
+<body>
+
+<!-- ===== NAV — pasted exactly as given ===== -->
+<header class="nav glass">
+  <a href="index.html" class="nav-brand">GRID</a>
+
+ <nav>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="aboutus.html">About Us</a></li>
+      <li><a href="team.html">Meet the Team</a></li>
+      <li><a href="https://grid-timeline.vercel.app/">Timeline</a></li>
+      <li><a href="FAQ/FAQ.html">FAQs</a></li>
+      <li><a href="ContactUs.html">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ===== HOME — pure visual/animation, no copy ===== -->
+<main>
+  <section class="hero">
+
+    <div class="hero-bg" aria-hidden="true"></div>
+
+    <div class="particles" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="hero-visual">
+
+      <div class="orbit-wrap">
+        <div class="orbit orbit-a" aria-hidden="true"></div>
+        <div class="orbit orbit-b" aria-hidden="true"></div>
+
+        <div class="cube-stage">
+          <div class="cube-scene">
+            <div class="cube">
+              <div class="cube-face face-front">
+                <span class="letter">G</span>
+                <span class="hud"><i></i><i></i><i></i><i></i></span>
+              </div>
+              <div class="cube-face face-right">
+                <span class="letter">R</span>
+                <span class="hud"><i></i><i></i><i></i><i></i></span>
+              </div>
+              <div class="cube-face face-back">
+                <span class="letter">I</span>
+                <span class="hud"><i></i><i></i><i></i><i></i></span>
+              </div>
+              <div class="cube-face face-left">
+                <span class="letter">D</span>
+                <span class="hud"><i></i><i></i><i></i><i></i></span>
+              </div>
+              <div class="cube-face face-top"></div>
+              <div class="cube-face face-bottom"></div>
+            </div>
+          </div>
+          <div class="cube-shadow"></div>
+        </div>
+      </div>
+
+      <div class="hero-wordmark">
+        <span class="word">GRID</span>
+        <span class="fullform">Group for Resonance, Innovation and Development</span>
+      </div>
+
+    </div>
+
+  </section>
+</main>
+<script>
+  const navToggle = document.querySelector('.nav-toggle');
+  const navbar = document.querySelector('.nav');
+
+  navToggle.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('nav-open');
+
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+
+</body>
+</html>
+</body>
+</html>
