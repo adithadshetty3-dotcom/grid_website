@@ -1,0 +1,60 @@
+/* Self-contained copy of the GRID design tokens used by Timeline. Kept under
+   .timeline-shell so a host GRID page retains ownership of global CSS. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+.timeline-shell {
+  --bg-void: #0A0A0C;
+  --bg-surface: #121215;
+  --glass-fill: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent: #D81E3F;
+  --accent-dim: #7A0F22;
+  --accent-glow: rgba(216, 30, 63, 0.35);
+  --text-primary: #F2EFEA;
+  --text-muted: #8A8690;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --text-xs: .8125rem;
+  --text-sm: .9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.375rem;
+  --text-xl: 2rem;
+  --text-2xl: 3rem;
+  --text-3xl: 4.25rem;
+  --space-1: .5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --space-7: 7rem;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.timeline-shell *, .timeline-shell *::before, .timeline-shell *::after { box-sizing: border-box; }
+.timeline-shell h1, .timeline-shell h2, .timeline-shell h3, .timeline-shell h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+.timeline-shell p { color: var(--text-muted); }
+.timeline-shell a { color: inherit; text-decoration: none; }
+.timeline-shell img { display: block; max-width: 100%; }
+.timeline-shell button, .timeline-shell input, .timeline-shell select, .timeline-shell textarea { font: inherit; }
+
+/* The photo viewer is intentionally portalled to body for viewport isolation. */
+.photo-viewer-backdrop {
+  --text-primary: #F2EFEA;
+  --text-muted: #8A8690;
+  --font-display: 'Space Grotesk', sans-serif;
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --accent: #D81E3F;
+  --accent-dim: #7A0F22;
+}

@@ -1,0 +1,43 @@
+{
+  "name": "grid-timeline",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env backend/src/server.js",
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js",
+    "test": "node --test backend/test/*.test.js frontend/src/*.test.js",
+    "test:backend": "node --test backend/test/*.test.js",
+    "test:frontend": "node --test frontend/src/*.test.js",
+    "test:parity": "TIMELINE_RUN_FLASK_PARITY=1 node --test backend/test/parity.test.js",
+    "db:init": "node --env-file-if-exists=.env backend/scripts/init-local-db.js",
+    "db:backup": "node --env-file-if-exists=.env backend/scripts/backup-sqlite.js",
+    "admin:create": "node --env-file-if-exists=.env backend/scripts/create-admin.js",
+    "rehearse:existing-data": "node backend/scripts/rehearse-existing-data.js",
+    "migrate:sqlite-to-postgres": "node --env-file-if-exists=.env backend/scripts/migrate-sqlite-to-postgres.js",
+    "migrate:images-to-private-blob": "node --env-file-if-exists=.env backend/scripts/migrate-images-to-private-blob.js"
+  },
+  "dependencies": {
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.41.0",
+    "@vercel/blob": "2.4.0",
+    "@vercel/functions": "^3.11.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "multer": "^2.0.2",
+    "pg": "^8.23.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0",
+    "pg-mem": "^3.0.14",
+    "vite": "^8.3.7"
+  }
+}

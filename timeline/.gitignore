@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules/
+public/
+frontend/dist/
+coverage/
+playwright-report/
+test-results/
+.vercel/
+*.log
+.vercel
+.env*
