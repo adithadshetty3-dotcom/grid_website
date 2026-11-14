@@ -777,9 +777,9 @@
     align-items: stretch;
     flex-direction: column;
     gap: 0;
-    width: calc(100% - 28px);
-    padding: 0.7rem 1.1rem;
-    border-radius: 28px;
+    width: calc(100% - 2rem);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-lg, 20px);
   }
 
   .timeline-shell .timeline-site-nav-header {
@@ -787,23 +787,23 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 52px;
+    min-height: 40px;
   }
 
   .timeline-shell .timeline-site-nav-brand {
     min-height: 0;
     padding-left: 0;
-    font-size: 1.8rem;
+    font-size: var(--text-lg, 1.375rem);
     line-height: 1;
   }
 
   .timeline-shell .timeline-site-nav-toggle {
     display: inline-flex;
-    flex: 0 0 44px;
+    flex: 0 0 40px;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     padding: 0;
     border: 0;
     border-radius: 50%;
