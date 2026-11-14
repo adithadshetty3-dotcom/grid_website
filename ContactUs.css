@@ -1,11 +1,11 @@
 .contact-page {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  min-height: 100vh;
-  min-height: 100svh;
-  align-items: center;
-  padding: clamp(4rem, 10vh, 7rem) 0;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    align-items: center;
+    padding: calc(clamp(4rem, 10vh, 7rem) + 3rem) 0 clamp(4rem, 10vh, 7rem);
 }
 
 .contact-section {
