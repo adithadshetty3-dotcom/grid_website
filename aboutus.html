@@ -54,6 +54,46 @@
       margin-bottom: var(--space-4);
     }
  
+    /* ===== Nav bar (desktop + phone) ===== */
+    nav {
+      position: relative;            /* sits in the page flow above the title, scrolls away with it */
+      z-index: 2;
+      margin: var(--space-2) auto 0;
+      width: calc(100% - var(--space-4));
+      max-width: 1040px;
+      padding: 0 var(--space-3);
+      border-radius: var(--radius-lg);
+      background: rgba(10, 10, 12, .72);
+      border: 1px solid var(--glass-border);
+      -webkit-backdrop-filter: blur(20px);
+              backdrop-filter: blur(20px);
+    }
+    /* style.css hides .nav-links under 768px (it expects a hamburger), so keep it visible here */
+    nav .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-4);
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav .nav-links::-webkit-scrollbar { display: none; }
+    .about-page { padding-top: var(--space-5); }
+    nav .nav-links a { display: block; padding: .85rem .15rem; white-space: nowrap; }
+    nav .nav-links a[href="aboutus.html"] { color: var(--text-primary); box-shadow: inset 0 -2px 0 var(--accent); }
+    @media (max-width: 768px) {
+      nav { margin-top: var(--space-1); width: calc(100% - var(--space-2)); padding: var(--space-1) var(--space-2); }
+      /* all six links stay visible on a phone: they wrap onto two rows */
+      nav .nav-links { flex-wrap: wrap; overflow: visible; gap: 0 var(--space-3); }
+      nav .nav-links a { padding: .55rem .1rem; }
+      .about-page { padding-top: var(--space-3); }
+    }
+ 
+    /* Four pillars: G R I D */
+    .about-card h3 { font-size: var(--text-lg); }
+    @media (min-width: 1001px) { .about-pillar-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    @media (min-width: 769px) and (max-width: 1000px) { .about-pillar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+ 
     /* Closing CTA band */
     .about-cta-wrap { margin-top: var(--space-7); }
     .about-cta { text-align: center; padding: var(--space-6) var(--space-3); }
@@ -210,6 +250,17 @@
 </head>
 <body>
  
+  <nav>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="aboutus.html">About Us</a></li>
+      <li><a href="team.html">Meet the Team</a></li>
+      <li><a href="https://grid-timeline.vercel.app/">Timeline</a></li>
+      <li><a href="FAQ/FAQ.html">FAQs</a></li>
+      <li><a href="ContactUs.html">Contact Us</a></li>
+    </ul>
+  </nav>
+ 
   <main class="about-page">
     
     <!-- ===== Hero ===== -->
@@ -221,8 +272,8 @@
         build projects, share ideas and gain real-world technical skills.
       </p>
       <div class="about-actions">
-        <a class="btn btn-primary" href="https://gridkssem.framer.website/#f1">Join GRID</a>
         <a class="btn btn-ghost" href="#vision">Our vision</a>
+        <a class="btn btn-primary" href="https://grid-timeline.vercel.app/">Timeline</a>
       </div>
       <div class="hero-factory" aria-hidden="true"><svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" focusable="false"><g class="bx d"><polygon class="l" points="224.8,305.0 536.6,485.0 536.6,495.0 224.8,315.0"/><polygon class="r" points="761.8,355.0 536.6,485.0 536.6,495.0 761.8,365.0"/><polygon class="t" points="450.0,175.0 761.8,355.0 536.6,485.0 224.8,305.0"/></g><g><line class="g" x1="450.0" y1="175.0" x2="224.8" y2="305.0"/><line class="g" x1="484.6" y1="195.0" x2="259.5" y2="325.0"/><line class="g" x1="519.3" y1="215.0" x2="294.1" y2="345.0"/><line class="g" x1="553.9" y1="235.0" x2="328.8" y2="365.0"/><line class="g" x1="588.6" y1="255.0" x2="363.4" y2="385.0"/><line class="g" x1="623.2" y1="275.0" x2="398.0" y2="405.0"/><line class="g" x1="657.8" y1="295.0" x2="432.7" y2="425.0"/><line class="g" x1="692.5" y1="315.0" x2="467.3" y2="445.0"/><line class="g" x1="727.1" y1="335.0" x2="502.0" y2="465.0"/><line class="g" x1="761.8" y1="355.0" x2="536.6" y2="485.0"/><line class="g" x1="450.0" y1="175.0" x2="761.8" y2="355.0"/><line class="g" x1="415.4" y1="195.0" x2="727.1" y2="375.0"/><line class="g" x1="380.7" y1="215.0" x2="692.5" y2="395.0"/><line class="g" x1="346.1" y1="235.0" x2="657.8" y2="415.0"/><line class="g" x1="311.4" y1="255.0" x2="623.2" y2="435.0"/><line class="g" x1="276.8" y1="275.0" x2="588.6" y2="455.0"/><line class="g" x1="242.2" y1="295.0" x2="553.9" y2="475.0"/></g><g class="bx d"><polygon class="l" points="436.1,27.0 450.0,35.0 450.0,197.0 436.1,189.0"/><polygon class="r" points="463.9,27.0 450.0,35.0 450.0,197.0 463.9,189.0"/><polygon class="t" points="450.0,19.0 463.9,27.0 450.0,35.0 436.1,27.0"/></g><g class="bx c"><polygon class="l" points="403.2,46.0 417.1,54.0 417.1,66.0 403.2,58.0"/><polygon class="r" points="463.9,27.0 417.1,54.0 417.1,66.0 463.9,39.0"/><polygon class="t" points="450.0,19.0 463.9,27.0 417.1,54.0 403.2,46.0"/></g><g class="bx d"><polygon class="l" points="385.9,192.0 680.4,362.0 680.4,382.0 385.9,212.0"/><polygon class="r" points="718.5,340.0 680.4,362.0 680.4,382.0 718.5,360.0"/><polygon class="t" points="424.0,170.0 718.5,340.0 680.4,362.0 385.9,192.0"/></g><line class="belt" x1="408.4" y1="183.0" x2="696.0" y2="349.0"/><g class="run" style="animation-delay:-0s"><g class="bx c"><polygon class="l" points="398.0,163.0 422.3,177.0 422.3,205.0 398.0,191.0"/><polygon class="r" points="446.5,163.0 422.3,177.0 422.3,205.0 446.5,191.0"/><polygon class="t" points="422.3,149.0 446.5,163.0 422.3,177.0 398.0,163.0"/></g></g><g class="run" style="animation-delay:-2.4s"><g class="bx c"><polygon class="l" points="398.0,163.0 422.3,177.0 422.3,205.0 398.0,191.0"/><polygon class="r" points="446.5,163.0 422.3,177.0 422.3,205.0 446.5,191.0"/><polygon class="t" points="422.3,149.0 446.5,163.0 422.3,177.0 398.0,163.0"/></g></g><g class="run" style="animation-delay:-4.8s"><g class="bx c"><polygon class="l" points="398.0,163.0 422.3,177.0 422.3,205.0 398.0,191.0"/><polygon class="r" points="446.5,163.0 422.3,177.0 422.3,205.0 446.5,191.0"/><polygon class="t" points="422.3,149.0 446.5,163.0 422.3,177.0 398.0,163.0"/></g></g><rect class="rope" x="416.1" y="58.0" width="2" height="62.0"/><g class="hoist"><g class="bx c"><polygon class="l" points="392.8,120.0 417.1,134.0 417.1,162.0 392.8,148.0"/><polygon class="r" points="441.3,120.0 417.1,134.0 417.1,162.0 441.3,148.0"/><polygon class="t" points="417.1,106.0 441.3,120.0 417.1,134.0 392.8,120.0"/></g></g><g class="bx c"><polygon class="l" points="276.8,175.0 337.4,210.0 337.4,330.0 276.8,295.0"/><polygon class="r" points="398.0,175.0 337.4,210.0 337.4,330.0 398.0,295.0"/><polygon class="t" points="337.4,140.0 398.0,175.0 337.4,210.0 276.8,175.0"/></g><g><line class="ld" x1="291.5" y1="302.5" x2="291.5" y2="186.5"/><line class="ld" x1="319.2" y1="318.5" x2="319.2" y2="202.5"/><line class="ld" x1="291.5" y1="292.5" x2="319.2" y2="308.5"/><line class="ld" x1="291.5" y1="276.5" x2="319.2" y2="292.5"/><line class="ld" x1="291.5" y1="260.5" x2="319.2" y2="276.5"/><line class="ld" x1="291.5" y1="244.5" x2="319.2" y2="260.5"/><line class="ld" x1="291.5" y1="228.5" x2="319.2" y2="244.5"/><line class="ld" x1="291.5" y1="212.5" x2="319.2" y2="228.5"/><line class="ld" x1="291.5" y1="196.5" x2="319.2" y2="212.5"/></g><g transform="translate(305.4,298.5) scale(1.25)"><g class="climb"><g class="fig climber"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/></g></g></g><g transform="translate(337.4,175.0) scale(1.25)"><g class="fig wave"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/></g></g><g class="bx d"><polygon class="l" points="424.0,270.0 476.0,300.0 476.0,370.0 424.0,340.0"/><polygon class="r" points="527.9,270.0 476.0,300.0 476.0,370.0 527.9,340.0"/><polygon class="t" points="476.0,240.0 527.9,270.0 476.0,300.0 424.0,270.0"/></g><g transform="matrix(.866 .5 0 1 432.7 285.0)"><rect class="scr" x="0" y="0" width="42" height="26" rx="2"/><rect class="bar" x="5" y="14" width="5" height="8" style="animation-delay:-0.00s"/><rect class="bar" x="14" y="7" width="5" height="15" style="animation-delay:-0.35s"/><rect class="bar" x="23" y="11" width="5" height="11" style="animation-delay:-0.70s"/><rect class="bar" x="32" y="4" width="5" height="18" style="animation-delay:-1.05s"/></g><g transform="matrix(-.866 .5 0 1 502.0 317.0)"><g class="spin"><circle class="gear" r="13"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(0)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(45)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(90)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(135)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(180)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(225)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(270)"/><line class="tooth" x1="0" y1="-13" x2="0" y2="-19" transform="rotate(315)"/><circle class="hub" r="4"/></g></g><g class="bx d"><polygon class="l" points="551.3,366.5 575.6,380.5 575.6,400.5 551.3,386.5"/><polygon class="r" points="599.8,366.5 575.6,380.5 575.6,400.5 599.8,386.5"/><polygon class="t" points="575.6,352.5 599.8,366.5 575.6,380.5 551.3,366.5"/></g><circle class="spark" cx="569.6" cy="361.5" r="2" style="--dx:-12px;--dy:-8px"/><circle class="spark" cx="575.6" cy="357.5" r="2" style="--dx:0px;--dy:-16px"/><circle class="spark" cx="581.6" cy="361.5" r="2" style="--dx:12px;--dy:-8px"/><g transform="translate(554.8,376.5) scale(1.3)"><g class="fig hit"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/><rect class="hm" x="-4" y="12" width="8" height="5" rx="1"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/></g></g><g transform="translate(389.4,345.0) scale(1.25)"><g class="walker"><g class="fig walk hold"><g transform="translate(0,-14)"><line class="lg a" x2="0" y2="14"/></g><g transform="translate(0,-14)"><line class="lg b" x2="0" y2="14"/></g><line x1="0" y1="-14" x2="0" y2="-26"/><g transform="translate(0,-24)"><g class="arm b"><line x2="0" y2="12"/></g></g><g transform="translate(0,-24)"><g class="arm a"><line x2="0" y2="12"/></g></g><circle class="hd" cx="0" cy="-31" r="5"/><path class="hat" d="M-6.5 -32 A6.5 6.5 0 0 1 6.5 -32 Z"/><g transform="translate(0,-52)"><g class="bx c"><polygon class="l" points="-12.1,-11.0 0.0,-4.0 0.0,7.0 -12.1,0.0"/><polygon class="r" points="12.1,-11.0 0.0,-4.0 0.0,7.0 12.1,0.0"/><polygon class="t" points="0.0,-18.0 12.1,-11.0 0.0,-4.0 -12.1,-11.0"/></g></g></g></g></g></svg></div>
     </header>
@@ -231,10 +282,16 @@
     <section class="container" aria-labelledby="pillars-title">
       <div class="about-section-heading">
         <p class="about-eyebrow">Our name</p>
-        <h2 id="pillars-title">Three ideas behind GRID</h2>
+        <h2 id="pillars-title">Four ideas behind GRID</h2>
       </div>
  
       <div class="about-pillar-grid">
+        <article class="card about-card">
+          <p class="about-card-index">G</p>
+          <h3>Group</h3>
+          <p>Built on open communication and shared goals, this project reflects the power of cross-functional collaboration.</p>
+        </article>
+ 
         <article class="card about-card">
           <p class="about-card-index">R</p>
           <h3>Resonance</h3>
@@ -275,11 +332,11 @@
     <!-- ===== Closing CTA ===== -->
     <section class="container about-cta-wrap" aria-labelledby="cta-title">
       <div class="card card-featured about-cta">
-        <h2 id="cta-title">Join GRID</h2>
+        <h2 id="cta-title"><a href="https://grid-timeline.vercel.app/">Join GRID</a></h2>
         <p>Build projects, share ideas and gain real-world technical skills with people who love to learn.</p>
         <div class="about-actions">
-          <a class="btn btn-primary" href="https://gridkssem.framer.website/#f1">Contact Us</a>
-          <a class="btn btn-ghost" href="https://gridkssem.framer.website/#m1">Meet the Core Team</a>
+          <a class="btn btn-primary" href="ContactUs.html">Contact Us</a>
+          <a class="btn btn-ghost" href="team.html">Meet the Core Team</a>
         </div>
       </div>
     </section>
@@ -298,10 +355,11 @@
         <div class="footer-col">
           <h4>Explore</h4>
           <ul>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="https://gridkssem.framer.website/#m1">Core Team</a></li>
-            <li><a href="https://gridkssem.framer.website/#t1">Timeline</a></li>
-            <li><a href="https://gridkssem.framer.website/#faq">FAQ</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="team.html">Meet the Team</a></li>
+            <li><a href="https://grid-timeline.vercel.app/">Timeline</a></li>
+            <li><a href="FAQ/FAQ.html">FAQs</a></li>
           </ul>
         </div>
  
@@ -310,7 +368,7 @@
           <ul>
             <li><a href="https://www.instagram.com/grid.kssem">Instagram</a></li>
             <li><a href="mailto:grid.kssem@gmail.com">Email</a></li>
-            <li><a href="https://gridkssem.framer.website/#f1">Contact Us</a></li>
+            <li><a href="ContactUs.html">Contact Us</a></li>
           </ul>
         </div>
       </div>
