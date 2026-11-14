@@ -2,6 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createTimelineSiteNavigation } from './timelineSiteNavigation.js';
 
+
+test('navigation labels match the shared GRID site', () => {
+  const items = createTimelineSiteNavigation('', '/timeline/');
+  assert.deepEqual(items.map(({ label }) => label), [
+    'Home',
+    'About Us',
+    'Meet the Team',
+    'Timeline',
+    'FAQs',
+    'Contact Us',
+  ]);
+});
+
 const parentPaths = [
   '/index.html',
   '/aboutus.html',

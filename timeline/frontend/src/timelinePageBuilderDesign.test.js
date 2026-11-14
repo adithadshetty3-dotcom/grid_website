@@ -171,16 +171,22 @@ test('Timeline section spacing uses the shared GRID rhythm at desktop and mobile
   assert.match(css, /\.timeline-shell \.timeline-filters\s*\{[\s\S]*?margin:\s*var\(--space-2, 16px\) 0 var\(--space-3, 24px\)/s);
 });
 
-test('mobile GRID navigation collapses behind the hamburger and expands vertically', () => {
+test('mobile GRID navigation keeps the brand and hamburger in one row with a dropdown', () => {
   const mobileNav = css.slice(css.indexOf('@media (max-width: 760px)'));
   const mobilePage = baseCss.slice(baseCss.indexOf('@media (max-width: 760px)'));
-  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav\s*\{[^}]*flex-direction:\s*column/s);
-  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-header\s*\{[^}]*display:\s*flex[^}]*justify-content:\s*space-between/s);
-  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-toggle\s*\{[^}]*display:\s*inline-flex/s);
-  const collapsedLinks = mobileNav.match(/\.timeline-shell \.timeline-site-nav-links\s*\{([^}]*)\}/s)?.[1] || '';
-  assert.match(collapsedLinks, /display:\s*none/);
+  const navRule = mobileNav.match(/\.timeline-shell \.timeline-site-nav\s*\{([^}]*)\}/s)?.[1] || '';
+  assert.match(navRule, /flex-direction:\s*row/);
+  assert.match(navRule, /padding:\s*0\.75rem 1\.25rem/);
+  assert.match(navRule, /border-radius:\s*var\(--radius-lg, 20px\)/);
+  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-header\s*\{[^}]*display:\s*contents/s);
+  const toggleRule = mobileNav.match(/\.timeline-shell \.timeline-site-nav-toggle\s*\{([^}]*)\}/s)?.[1] || '';
+  assert.match(toggleRule, /display:\s*inline-flex/);
+  assert.match(toggleRule, /padding:\s*5px/);
+  const dropdownRule = mobileNav.match(/\.timeline-shell \.timeline-site-nav-links\s*\{([^}]*)\}/s)?.[1] || '';
+  assert.match(dropdownRule, /display:\s*none/);
+  assert.match(dropdownRule, /position:\s*absolute/);
+  assert.match(dropdownRule, /top:\s*calc\(100% \+ 12px\)/);
   assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-links\.is-open\s*\{[^}]*display:\s*flex/s);
-  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-links a\s*\{[^}]*min-height:\s*44px/s);
   assert.match(mobilePage, /\.timeline-shell\s*\{[^}]*padding:\s*max\(7\.5rem, calc\(env\(safe-area-inset-top\) \+ 6\.5rem\)\)/s);
 });
 
