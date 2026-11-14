@@ -69,25 +69,31 @@ test('category dropdown uses compact, responsive sizing and consistent spacing',
 
 
 
-test('Timeline has a namespaced GRID glass navbar with the active Timeline destination', () => {
-  assert.match(app, /<nav className="timeline-site-nav" aria-label="GRID site navigation">/);
+test('Timeline has a namespaced GRID glass navbar with accessible desktop and mobile navigation', () => {
+  assert.match(app, /<nav\s+className=\{`timeline-site-nav/);
+  assert.match(app, /aria-label="GRID site navigation"/);
   assert.match(app, /className="timeline-site-nav-brand"[^>]*>GRID<\/a>/);
-  assert.match(app, /className="timeline-site-nav-links"/);
+  assert.match(app, /className="timeline-site-nav-toggle"/);
+  assert.match(app, /aria-expanded=\{mobileNavOpen\}/);
+  assert.match(app, /aria-controls="timeline-site-nav-links"/);
+  assert.match(app, /id="timeline-site-nav-links"/);
+  assert.match(app, /createTimelineSiteNavigation\(/);
   assert.ok(
-    app.indexOf('<nav className="timeline-site-nav"') < app.indexOf('<div className="timeline-container">'),
+    app.indexOf('<nav') < app.indexOf('<div className="timeline-container">'),
     'Navigation should remain outside the centered content container',
   );
-  assert.match(app, /createTimelineSiteNavigation\(/);
   assert.match(css, /\.timeline-shell \.timeline-site-nav\s*\{[^}]*position:\s*fixed[^}]*top:\s*var\(--space-2, 1rem\)[^}]*max-width:\s*1040px/s);
   assert.match(css, /\.timeline-shell \.timeline-site-nav\s*\{[^}]*padding:\s*var\(--space-1, 0\.5rem\) var\(--space-3, 1\.5rem\)[^}]*border-radius:\s*var\(--radius-lg, 20px\)[^}]*background:\s*var\(--glass-fill, rgba\(255, 255, 255, 0\.035\)\)[^}]*backdrop-filter:\s*blur\(20px\)/s);
   assert.match(css, /timeline-site-nav-brand\s*\{[^}]*font-family:\s*'JetBrains Mono', monospace/);
   assert.match(css, /timeline-site-nav-links\s*\{[^}]*gap:\s*var\(--space-4, 2rem\)/);
-  assert.match(css, /timeline-site-nav-links a\s*\{[^}]*font-size:\s*var\(--text-sm, 0\.9375rem\)/);
   assert.match(css, /\.timeline-shell \.timeline-site-nav-links a\[aria-current="page"\]/);
   const activeNavRule = css.match(/\.timeline-shell \.timeline-site-nav-links a:hover,[\s\S]*?\.timeline-site-nav-links a\[aria-current="page"\]\s*\{[^}]*\}/)?.[0] || '';
   assert.match(activeNavRule, /color:\s*var\(--text-primary, #f2efea\)/);
   assert.doesNotMatch(activeNavRule, /background|border/);
-  assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.timeline-shell \.timeline-site-nav-links\s*\{[^}]*overflow-x:\s*auto/s);
+  assert.match(css, /timeline-site-nav-header\s*\{\s*display:\s*contents/s);
+  assert.match(css, /timeline-site-nav-toggle\s*\{\s*display:\s*none/s);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*?timeline-site-nav-toggle\s*\{[^}]*display:\s*inline-flex/s);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*?timeline-site-nav-links\.is-open\s*\{[^}]*display:\s*flex/s);
   assert.doesNotMatch(css, /(^|[\s,])\.(?:nav|glass)(?:[\s.#:[,{])/m);
   assert.doesNotMatch(baseCss, /\.timeline-shell \.nav\s*\{/);
 });
@@ -165,13 +171,16 @@ test('Timeline section spacing uses the shared GRID rhythm at desktop and mobile
   assert.match(css, /\.timeline-shell \.timeline-filters\s*\{[\s\S]*?margin:\s*var\(--space-2, 16px\) 0 var\(--space-3, 24px\)/s);
 });
 
-test('mobile glass navigation stacks the wordmark and scrolls its links horizontally', () => {
+test('mobile GRID navigation collapses behind the hamburger and expands vertically', () => {
   const mobileNav = css.slice(css.indexOf('@media (max-width: 760px)'));
   const mobilePage = baseCss.slice(baseCss.indexOf('@media (max-width: 760px)'));
   assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav\s*\{[^}]*flex-direction:\s*column/s);
-  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-links\s*\{[^}]*overflow-x:\s*auto/s);
-  assert.match(css, /\.timeline-shell \.timeline-site-nav-links a\s*\{[^}]*white-space:\s*nowrap/s);
-  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-links a\s*\{[^}]*flex:\s*0 0 auto/s);
+  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-header\s*\{[^}]*display:\s*flex[^}]*justify-content:\s*space-between/s);
+  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-toggle\s*\{[^}]*display:\s*inline-flex/s);
+  const collapsedLinks = mobileNav.match(/\.timeline-shell \.timeline-site-nav-links\s*\{([^}]*)\}/s)?.[1] || '';
+  assert.match(collapsedLinks, /display:\s*none/);
+  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-links\.is-open\s*\{[^}]*display:\s*flex/s);
+  assert.match(mobileNav, /\.timeline-shell \.timeline-site-nav-links a\s*\{[^}]*min-height:\s*44px/s);
   assert.match(mobilePage, /\.timeline-shell\s*\{[^}]*padding:\s*max\(7\.5rem, calc\(env\(safe-area-inset-top\) \+ 6\.5rem\)\)/s);
 });
 

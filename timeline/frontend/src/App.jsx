@@ -596,6 +596,7 @@ function MilestoneEditor({ milestone, onSave, onCancel, onDraftChange, saving, s
 }
 
 export default function App() {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [localMilestones, setLocalMilestones] = useState([]);
   const [publishedMilestones, setPublishedMilestones] = useState([]);
   const milestones = useMemo(
@@ -1119,25 +1120,56 @@ export default function App() {
         </div>
       )}
       {SHOW_STANDALONE_TIMELINE_NAV && (
-        <nav className="timeline-site-nav" aria-label="GRID site navigation">
-          {SITE_NAV_ITEMS[0].disabled ? (
-            <span className="timeline-site-nav-brand" aria-label="GRID Home">GRID</span>
-          ) : (
-            <a className="timeline-site-nav-brand" href={SITE_NAV_ITEMS[0].href} aria-label="GRID Home">GRID</a>
-          )}
-          <div className="timeline-site-nav-links">
+        <nav
+          className={`timeline-site-nav${mobileNavOpen ? ' is-open' : ''}`}
+          aria-label="GRID site navigation"
+          onKeyDown={(event) => { if (event.key === 'Escape') setMobileNavOpen(false); }}
+        >
+          <div className="timeline-site-nav-header">
+            {SITE_NAV_ITEMS[0].disabled ? (
+              <span className="timeline-site-nav-brand" aria-label="GRID Home">GRID</span>
+            ) : (
+              <a className="timeline-site-nav-brand" href={SITE_NAV_ITEMS[0].href} aria-label="GRID Home">GRID</a>
+            )}
+            <button
+              type="button"
+              className="timeline-site-nav-toggle"
+              aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileNavOpen}
+              aria-controls="timeline-site-nav-links"
+              onClick={() => setMobileNavOpen((open) => !open)}
+            >
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+                <path
+                  d={mobileNavOpen ? 'M6 6l12 12M18 6L6 18' : 'M3 6h18M3 12h18M3 18h18'}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            id="timeline-site-nav-links"
+            className={`timeline-site-nav-links${mobileNavOpen ? ' is-open' : ''}`}
+          >
             {SITE_NAV_ITEMS.map((item) => (
               item.disabled ? (
                 <span
                   key={item.label}
                   className="timeline-site-nav-link-disabled"
                   aria-disabled="true"
-                  title="Available when the main GRID website launches"
+                  title="Main GRID page unavailable"
                 >
                   {item.label}
                 </span>
               ) : (
-                <a key={item.label} href={item.href} aria-current={item.current ? 'page' : undefined}>
+                <a
+                  key={item.label}
+                  href={item.href}
+                  aria-current={item.current ? 'page' : undefined}
+                  onClick={() => setMobileNavOpen(false)}
+                >
                   {item.label}
                 </a>
               )

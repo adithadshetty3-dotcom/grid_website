@@ -47,8 +47,11 @@ test('admin sign-in remains behind a closed panel and uses the subtle entry poin
 });
 
 test('Timeline navigation uses its dedicated glass navbar classes', () => {
-  assert.match(app, /<nav className="timeline-site-nav"/);
+  assert.match(app, /<nav\s+className=\{`timeline-site-nav/);
   assert.match(app, /timeline-site-nav-brand/);
+  assert.match(app, /className="timeline-site-nav-toggle"/);
+  assert.match(app, /aria-expanded=\{mobileNavOpen\}/);
+  assert.match(app, /aria-controls="timeline-site-nav-links"/);
   assert.match(modularCss, /\.timeline-shell \.timeline-site-nav\s*\{[^}]*backdrop-filter:/s);
   assert.doesNotMatch(app, /className=\{`nav glass/);
   const adminPanelIndex = admin.indexOf('className="timeline-admin-panel');

@@ -54,3 +54,17 @@ test('parent navigation entries become active when the main GRID URL is configur
     [false, false, false, false, false],
   );
 });
+
+test('published GRID navigation uses the supplied parent-site URLs', () => {
+  const items = createTimelineSiteNavigation('https://grid-website-two.vercel.app', '/');
+  assert.deepEqual(items.map(({ href }) => href), [
+    'https://grid-website-two.vercel.app/index.html',
+    'https://grid-website-two.vercel.app/aboutus.html',
+    'https://grid-website-two.vercel.app/team.html',
+    '/',
+    'https://grid-website-two.vercel.app/FAQ/FAQ.html',
+    'https://grid-website-two.vercel.app/ContactUs.html',
+  ]);
+  assert.equal(items[3].current, true);
+  assert.ok(items.every((item) => item.current || !item.disabled));
+});
