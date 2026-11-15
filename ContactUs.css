@@ -1,3 +1,4 @@
+
 .contact-page {
     position: relative;
     z-index: 1;
@@ -9,176 +10,247 @@
 }
 
 .contact-section {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  align-items: center;
-  gap: clamp(2rem, 6vw, 5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5rem);
 }
 
 .contact-intro {
-  max-width: 550px;
+    max-width: 550px;
 }
 
 .contact-eyebrow,
 .contact-label {
-  color: var(--accent);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+    color: var(--accent);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
 }
 
 .contact-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: var(--space-2);
 }
 
 .contact-eyebrow span {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent-glow);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent-glow);
 }
 
 .contact-intro h1 {
-  margin-bottom: var(--space-2);
-  font-size: clamp(3rem, 6.5vw, var(--text-3xl));
+    margin-bottom: var(--space-2);
+    font-size: clamp(3rem, 6.5vw, var(--text-3xl));
 }
 
 .contact-intro h1 span {
-  color: var(--accent);
+    color: var(--accent);
 }
 
 .contact-welcome {
-  max-width: 46ch;
-  font-size: var(--text-lg);
+    max-width: 46ch;
+    font-size: var(--text-lg);
 }
 
 .contact-options {
-  display: grid;
-  gap: var(--space-2);
+    display: grid;
+    gap: var(--space-2);
 }
 
 .contact-option {
-  display: flex;
-  min-width: 0;
-  min-height: 96px;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  background: var(--glass-fill);
-  transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+    display: flex;
+    min-width: 0;
+    min-height: 96px;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    background: var(--glass-fill);
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
 }
 
 .contact-option:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent-dim);
-  background: rgba(216, 30, 63, 0.06);
+    transform: translateY(-2px);
+    border-color: var(--accent-dim);
+    background: rgba(216, 30, 63, 0.06);
 }
 
 .contact-icon {
-  display: grid;
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm);
-  color: var(--accent);
-  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    display: grid;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--accent);
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
 .contact-option:hover .contact-icon {
-  border-color: var(--accent-dim);
-  box-shadow: 0 0 18px var(--accent-glow);
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 18px var(--accent-glow);
 }
 
 .contact-icon svg {
-  width: 22px;
-  height: 22px;
+    width: 22px;
+    height: 22px;
 }
 
 .contact-copy {
-  display: grid;
-  min-width: 0;
-  gap: 0.15rem;
+    display: grid;
+    min-width: 0;
+    gap: 0.15rem;
 }
 
 .contact-label {
-  font-size: 0.6875rem;
+    font-size: 0.6875rem;
 }
 
 .contact-copy strong {
-  overflow-wrap: anywhere;
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: 600;
+    overflow-wrap: anywhere;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
 }
 
 .contact-arrow {
-  margin-left: auto;
-  padding-left: var(--space-1);
-  color: var(--text-muted);
-  font-size: var(--text-lg);
-  transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+    margin-left: auto;
+    padding-left: var(--space-1);
+    color: var(--text-muted);
+    font-size: var(--text-lg);
+    transition: color 0.2s var(--ease), transform 0.2s var(--ease);
 }
 
 .contact-option:hover .contact-arrow {
-  transform: translate(2px, -2px);
-  color: var(--accent);
+    transform: translate(2px, -2px);
+    color: var(--accent);
 }
+
+/* =========================================================
+   TABLET AND MOBILE CONTACT PAGE
+   ========================================================= */
 
 @media (max-width: 768px) {
-  .contact-page {
-    padding: var(--space-6) 0;
-  }
+    .contact-page {
+        padding: calc(var(--space-6) + 5rem) 0 var(--space-6);
+    }
 
-  .contact-section {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
+    .contact-section {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
 
-  .contact-intro h1 {
-    font-size: clamp(2.5rem, 10vw, 3.5rem);
-  }
+    .contact-intro h1 {
+        font-size: clamp(2.5rem, 10vw, 3.5rem);
+    }
 
-  .contact-welcome {
-    font-size: var(--text-base);
-  }
+    .contact-welcome {
+        font-size: var(--text-base);
+    }
 }
+
+/* =========================================================
+   SMALL MOBILE SCREENS
+   ========================================================= */
 
 @media (max-width: 420px) {
-  .contact-page {
-    padding: var(--space-5) 0;
-  }
+    .contact-page {
+        padding: calc(var(--space-5) + 5rem) 0 var(--space-5);
+    }
 
-  .contact-option {
-    gap: var(--space-1);
-    padding: var(--space-2);
-  }
+    .contact-option {
+        gap: var(--space-1);
+        padding: var(--space-2);
+    }
 
-  .contact-copy strong {
-    font-size: var(--text-base);
-  }
+    .contact-copy strong {
+        font-size: var(--text-base);
+    }
 
-  .contact-arrow {
-    padding-left: 0;
-  }
+    .contact-arrow {
+        padding-left: 0;
+    }
 }
+
+/* =========================================================
+   MOBILE NAVBAR
+   ========================================================= */
+
+/* Hamburger button hidden on desktop */
+.nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .nav {
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 2rem);
+        justify-content: space-between;
+        position: fixed;
+    }
+
+    .nav-toggle {
+        display: flex;
+        flex-shrink: 0;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% + 0.75rem);
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        background: var(--glass-fill);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav.nav-open .nav-links {
+        display: flex;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links a {
+        display: block;
+        width: 100%;
+        padding: 0.85rem 1rem;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .contact-option,
-  .contact-icon,
-  .contact-arrow {
-    transition: none;
-  }
-}
-@media (max-width: 768px) {
-    .faq-page {
-        padding-top: calc(var(--space-6) + 5rem);
+    .contact-option,
+    .contact-icon,
+    .contact-arrow {
+        transition: none;
     }
 }
