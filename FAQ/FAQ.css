@@ -4,8 +4,9 @@
     width: 100%;
     max-width: 920px;
     margin: 0 auto;
-    padding: var(--space-6) var(--space-3);
+    padding: calc(var(--space-6) + 3rem) var(--space-3) var(--space-6);
 }
+
 
 .faq-heading {
     margin-bottom: var(--space-3);

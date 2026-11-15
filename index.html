@@ -13,14 +13,14 @@
 <header class="nav glass">
   <a href="index.html" class="nav-brand">GRID</a>
 
-  <nav>
+ <nav>
     <ul class="nav-links">
-      <li><a href="index.html" aria-current="page">Home</a></li>
-      <li><a href="about.html">About Us</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="aboutus.html">About Us</a></li>
       <li><a href="team.html">Meet the Team</a></li>
-      <li><a href="timeline.html">Timeline</a></li>
-      <li><a href="faqs.html">FAQs</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
+      <li><a href="https://grid-timeline.vercel.app/">Timeline</a></li>
+      <li><a href="FAQ/FAQ.html">FAQs</a></li>
+      <li><a href="ContactUs.html">Contact Us</a></li>
     </ul>
   </nav>
 
@@ -78,13 +78,25 @@
 
       <div class="hero-wordmark">
         <span class="word">GRID</span>
-        <span class="fullform">Group of Resonance, Innovation and Development</span>
+        <span class="fullform">Group for Resonance, Innovation and Development</span>
       </div>
 
     </div>
 
   </section>
 </main>
+<script>
+  const navToggle = document.querySelector('.nav-toggle');
+  const navbar = document.querySelector('.nav');
 
+  navToggle.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('nav-open');
+
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+
+</body>
+</html>
 </body>
 </html>
