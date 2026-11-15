@@ -213,21 +213,20 @@
     }
 
     .nav-links {
-        display: none;
-        position: absolute;
-        top: calc(100% + 0.75rem);
-        left: 0;
-        width: 100%;
-        flex-direction: column;
-        gap: 0;
-        padding: 0.5rem;
-        border: 1px solid var(--glass-border);
-        border-radius: var(--radius-md);
-        background: var(--glass-fill);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-    }
-
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    background: #121215;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    z-index: 1001;
+}
     .nav.nav-open .nav-links {
         display: flex;
     }
