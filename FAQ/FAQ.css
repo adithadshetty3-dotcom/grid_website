@@ -1,12 +1,16 @@
+
+/* =========================
+   FAQ PAGE STYLES
+   ========================= */
+
 .faq-page {
     position: relative;
     z-index: 1;
     width: 100%;
     max-width: 920px;
     margin: 0 auto;
-    padding: calc(var(--space-6) + 3rem) var(--space-3) var(--space-6);
+    padding: var(--space-6) var(--space-3);
 }
-
 
 .faq-heading {
     margin-bottom: var(--space-3);
@@ -223,6 +227,10 @@
     }
 }
 
+/* =========================
+   FAQ RESPONSIVE STYLES
+   ========================= */
+
 @media (max-width: 480px) {
     .faq-page {
         padding: var(--space-5) var(--space-2);
@@ -237,6 +245,86 @@
         font-size: var(--text-sm);
     }
 }
+
+/* =========================
+   NAVBAR STYLES
+   ========================= */
+
+/* GRID logo */
+.nav-logo {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+/* Keep the desktop navbar slightly shifted right */
+.nav {
+    left: calc(50% + 30px);
+}
+
+/* Hamburger button is hidden on desktop */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Mobile navbar */
+@media (max-width: 768px) {
+
+    .nav {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: calc(100% - 2rem);
+        max-width: 1040px;
+        padding: 0.75rem 1.25rem;
+        justify-content: space-between;
+    }
+
+    .nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        z-index: 102;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% + 12px);
+        left: 0;
+        width: 100%;
+        padding: 1.5rem;
+        flex-direction: column;
+        gap: 1.25rem;
+        list-style: none;
+        background: #121215;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav.nav-open .nav-links {
+        display: flex;
+    }
+
+    .nav-links a {
+        display: block;
+        color: var(--text-primary);
+        font-size: 1rem;
+    }
+}
+
+/* =========================
+   REDUCED MOTION
+   ========================= */
 
 @media (prefers-reduced-motion: reduce) {
     .faq-trigger[aria-expanded="true"]::after {
@@ -261,5 +349,10 @@
     .faq-toggle::before,
     .faq-toggle::after {
         transition: none;
+    }
+}
+@media (max-width: 768px) {
+    .faq-page {
+        padding-top: calc(var(--space-6) + 5rem);
     }
 }
