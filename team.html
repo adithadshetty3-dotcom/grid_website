@@ -150,6 +150,32 @@
     </script>
 
     <script src="team.js"></script>
+    <script>
+const menuButton = document.querySelector(".nav-toggle");
+const navbar = document.querySelector(".nav");
+
+menuButton.addEventListener("click", function () {
+    navbar.classList.toggle("nav-open");
+
+    const isOpen = navbar.classList.contains("nav-open");
+
+    menuButton.setAttribute("aria-expanded", isOpen);
+    menuButton.setAttribute(
+        "aria-label",
+        isOpen ? "Close menu" : "Open menu"
+    );
+
+    menuButton.textContent = isOpen ? "✕" : "☰";
+});
+
+document.querySelectorAll(".nav-links a").forEach(link => {
+    link.addEventListener("click", () => {
+        navbar.classList.remove("nav-open");
+        menuButton.textContent = "☰";
+        menuButton.setAttribute("aria-expanded", "false");
+    });
+});
+</script>
 
 </body>
 </html>

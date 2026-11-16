@@ -23,7 +23,7 @@ const teamMembers = {
     ],
 
     technical: [
-        { name: "Madesh H S", role: "Technical Team", photo: "images/team/technical1.jpeg", linkedin: "https://www.linkedin.com/in/madesh-h-s-2aa0153a0?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+        { name: "Madesh H S", role: "Technical Team", photo: "images/team/technical1.png", linkedin: "https://www.linkedin.com/in/madesh-h-s-2aa0153a0?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
         { name: " K Vineel ", role: "Technical Team", photo: "images/team/technical2.jpeg", linkedin: "https://www.linkedin.com/in/k-vineel-9132863a4/" },
         { name: "Avanija ", role: "Technical Team", photo: "images/team/technical3.jpeg", linkedin: "https://www.linkedin.com/in/avanija-mantena-454919367?utm_source=share_via&utm_content=profile&utm_medium=member_android" }
     ],
