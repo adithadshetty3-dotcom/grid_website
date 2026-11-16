@@ -231,9 +231,21 @@
    FAQ RESPONSIVE STYLES
    ========================= */
 
+@media (max-width: 768px) {
+    .faq-page {
+        padding-top: calc(var(--space-6) + 5rem);
+        padding-right: var(--space-3);
+        padding-bottom: var(--space-6);
+        padding-left: var(--space-3);
+    }
+}
+
 @media (max-width: 480px) {
     .faq-page {
-        padding: var(--space-5) var(--space-2);
+        padding-top: calc(var(--space-5) + 5rem);
+        padding-right: var(--space-2);
+        padding-bottom: var(--space-5);
+        padding-left: var(--space-2);
     }
 
     .faq-heading {
@@ -276,7 +288,6 @@
 
 /* Mobile navbar */
 @media (max-width: 768px) {
-
     .nav {
         left: 50%;
         right: auto;
@@ -349,10 +360,5 @@
     .faq-toggle::before,
     .faq-toggle::after {
         transition: none;
-    }
-}
-@media (max-width: 768px) {
-    .faq-page {
-        padding-top: calc(var(--space-6) + 5rem);
     }
 }
